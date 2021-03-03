@@ -41,3 +41,49 @@ graph TD
     led --- act1[LED strip publisher];
     end;
 ```
+
+````
+graph TD;
+
+    %% Caregiver Computer
+    subgraph caregiver[Caregiver PC];
+        app[Web app];
+    end;
+
+    %% Server Computer
+    subgraph server_comp[Server Computer];
+        server[Web server];
+        db[Database];
+    end;
+
+    %% Raspberry PI
+    subgraph raspi[Raspberry PI];
+        mqtt[MQTT broker];
+        ztm[Z2M];
+        logic[Application];
+    end;
+
+    %% PIR Sensor
+    subgraph pir[PIR sensor];
+        zb_pub1[Zigbee publisher];
+    end;
+
+    %% Vibration Sensor
+    subgraph vib[Vibration sensor];
+        zb_pub2[Zigbee publisher];
+    end;
+
+    %% LED Strip
+    subgraph led[LED strip];
+        zb_sub1[Zigbee subscriber];
+    end;
+
+    %% Connections
+    zb_pub1 --- ztm;
+    zb_pub2 --- ztm;
+    zb_sub1 --- ztm;
+    server --- app;
+    ztm --- mqtt;
+    mqtt --- logic;
+    logic --- server;
+````
