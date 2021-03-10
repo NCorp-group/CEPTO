@@ -8,34 +8,33 @@ participant "++Zigbee Coordinator++" as zb
 participant "++PIR Sensor++" as pir
 participant "++Light Strip++" as light
 
-activate ctrl
 ctrl ->> mqtt: subscribe to PIR
 // TODO: maybe change "Light Guide" to product name
 
 loop
 pir -> pir: detect movement
-activate pir
+activate pir #lightgrey
 note over pir: sensor detects something,\n e.g. user enters a new zone
 
 opt change in state
 pir ->> zb: publish state
-deactivate pir
-activate zb
+deactivate pir 
+activate zb #lightgrey
 zb ->> mqtt: publish to PIR
 deactivate zb
-activate mqtt
+activate mqtt #lightgrey
 mqtt ->> ctrl: on_message() callback
 deactivate mqtt
-activate ctrl
+activate ctrl #lightgrey
 note over ctrl: controller filters out all irrelevant topics, \n i.e. it only reacts to occupancy changes
 
 opt occupancy changed
 ctrl ->> mqtt: publish to light_strip/state
 deactivate ctrl
-activate mqtt
+activate mqtt #lightgrey
 mqtt ->> zb: publish light_strip/state
 deactivate mqtt
-activate zb
+activate zb #lightgrey
 zb ->> light: update light strip state
 deactivate zb
 end
