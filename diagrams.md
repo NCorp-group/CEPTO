@@ -1,3 +1,49 @@
+Sequence diagram for local system:
+````
+title Sensor - Raspberry PI Interaction
+
+participant "++Light Guide Controller++" as ctrl
+participant "++MQTT Broker++" as mqtt
+participant "++Zigbee Coordinator++" as zb
+participant "++PIR Sensor++" as pir
+participant "++Light Strip++" as light
+
+activate ctrl
+ctrl ->> mqtt: subscribe to PIR
+// TODO: maybe change "Light Guide" to product name
+
+loop
+pir -> pir: detect movement
+activate pir
+note over pir: sensor detects something,\n e.g. user enters a new zone
+
+opt change in state
+pir ->> zb: publish state
+deactivate pir
+activate zb
+zb ->> mqtt: publish to PIR
+deactivate zb
+activate mqtt
+mqtt ->> ctrl: on_message() callback
+deactivate mqtt
+activate ctrl
+note over ctrl: controller filters out all irrelevant topics, \n i.e. it only reacts to occupancy changes
+
+opt occupancy changed
+ctrl ->> mqtt: publish to light_strip/state
+deactivate ctrl
+activate mqtt
+mqtt ->> zb: publish light_strip/state
+deactivate mqtt
+activate zb
+zb ->> light: update light strip state
+deactivate zb
+end
+end
+end
+````
+
+Mermaid layered diagram:
 ```mermaid
 graph TD
     subgraph UI;
@@ -41,8 +87,8 @@ graph TD
     led --- act1[LED strip publisher];
     end;
 ```
-
-````
+Alternative:
+````mermaid
 graph TD;
 
     %% Caregiver Computer
