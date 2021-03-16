@@ -42,6 +42,51 @@ end
 end
 ````
 
+Sequence diagram for client-server interaction:
+````
+title Raspberry PI - Server Interaction
+
+participantgroup #eeeeee **Client**
+participant "++RasPI Business Logic++" as client
+participant "++MQTT Publisher++" as mqtt_c
+end
+
+participantgroup #eeeeee **Server**
+participant "++MQTT Subscriber++" as mqtt_s
+participant "++Server Business Logic++" as server
+participant "++Database Manager" as db
+end
+
+server ->> mqtt_s: subscribe to user_vacancy_data
+activate mqtt_s #cccccc
+mqtt_s -->> server: subscription ack
+deactivate mqtt_s
+opt incoming sensor data
+[->> client:
+activate client #cccccc
+note over client: Processes sensor data\n and publishes results in\n a new topic.
+client ->> mqtt_c: publish to user_vacancy_data
+deactivate client
+activate mqtt_c #cccccc
+mqtt_c ->> mqtt_s: publish to user_vacancy_data
+deactivate mqtt_c #cccccc
+activate mqtt_s #cccccc
+mqtt_s ->> server: on_message() callback
+deactivate mqtt_s
+activate server #cccccc
+server ->> db: create new entry
+activate db #cccccc
+db -->> server: ok
+deactivate db
+
+deactivate server
+end
+````
+
+
+
+
+
 Mermaid layered diagram:
 ```mermaid
 graph TD
