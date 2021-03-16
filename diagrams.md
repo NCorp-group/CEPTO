@@ -8,7 +8,7 @@ participant "++Zigbee Coordinator++" as zb
 participant "++PIR Sensor++" as pir
 participant "++Light Strip++" as light
 
-ctrl ->> mqtt: subscribe to PIR
+ctrl ->> mqtt: subscribe to pir_sensor
 // TODO: maybe change "Light Guide" to product name
 
 loop
@@ -20,7 +20,7 @@ opt change in state
 pir ->> zb: publish state
 deactivate pir 
 activate zb #lightgrey
-zb ->> mqtt: publish to PIR
+zb ->> mqtt: publish to pir_sensor
 deactivate zb
 activate mqtt #lightgrey
 mqtt ->> ctrl: on_message() callback
