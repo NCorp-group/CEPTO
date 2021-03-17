@@ -83,7 +83,60 @@ deactivate server
 end
 ````
 
+Sequence diagram for Server - Webapp
+````
+title Server - Caregiver PC Interaction
 
+participantgroup #eeeeee Server
+participant "Database Manager" as db
+participant "Server Business Logic" as s_logic
+participant "Web API" as api
+end
+
+participantgroup #eeeeee Caregiver Browser
+participant "Browser\nHTTP Handler" as http
+participant "Vue.js Component" as vue
+participant "DOM" as dom
+end
+
+http ->> api: HTTP GET page
+activate api #cccccc
+api -->> http:
+deactivate api
+activate http #cccccc
+http -->> *dom:
+http -->> *vue:
+deactivate http
+
+opt caregiver interacts with page element
+dom ->> vue: user interagtion
+activate vue #cccccc
+opt request requires server involvement
+vue ->> api: HTTP request
+deactivate vue
+activate api #cccccc
+opt request requires database access
+api -> s_logic: query
+deactivate api
+activate s_logic #cccccc
+s_logic -> db: query
+deactivate s_logic
+activate db #cccccc
+db --> s_logic: query result
+deactivate db
+activate s_logic #cccccc
+s_logic --> api: query result
+deactivate s_logic
+activate api #cccccc
+end
+api -->> vue: HTTP response
+deactivate api
+activate vue #cccccc
+end
+vue -->> dom: update graphics
+deactivate vue
+end
+````
 
 
 
