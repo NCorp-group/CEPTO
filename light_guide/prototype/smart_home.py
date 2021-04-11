@@ -33,8 +33,16 @@ class SmartHome:
         print("Turning light on")
         pub = mqtt.Client()
         pub.connect(self.mqtt_server_ip, self.mqtt_server_port)
-        message = '{"state":"ON"}'
-        pub.publish("zigbee2mqtt/light_strip/set", message, 1)
+        message = {
+            "state": "ON",
+            "color": {
+            "x": 0.7025,
+            "y": 0.3737
+            }
+        }
+        #message = '{"state":"ON"}'
+        pub.publish("zigbee2mqtt/light_strip/set", json.dumps(message), 1)
+        #pub.publish("zigbee2mqtt/light_strip/set", message, 1)
         pub.disconnect()
 
     def on_message(self, client, userdata, msg): # Updating the correct variables
@@ -60,6 +68,7 @@ class SmartHome:
             self.turn_light_on()
             self.light_state = True
         elif(self.pir1_occupancy == False and self.pir2_occupancy == False and self.light_state):
+        #elif(self.pir1_occupancy == False and self.light_state):
             self.turn_light_off()
             self.light_state = False
 
