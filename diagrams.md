@@ -48,31 +48,35 @@ title Raspberry PI - Server Interaction
 
 participantgroup #eeeeee **Client**
 participant "++RasPI Business Logic++" as client
-participant "++MQTT Publisher++" as mqtt_c
+# participant "++MQTT Publisher++" as mqtt_c
 end
 
+participant "++MQTT Broker++" as broker
+
 participantgroup #eeeeee **Server**
-participant "++MQTT Subscriber++" as mqtt_s
+#participant "++MQTT Subscriber++" as mqtt_s
 participant "++Server Business Logic++" as server
 participant "++Database Manager" as db
 end
 
-server ->> mqtt_s: subscribe to user_vacancy_data
-activate mqtt_s #cccccc
-mqtt_s -->> server: subscription ack
-deactivate mqtt_s
+note over client,server: MQTT is distributed between client and server.
+
+server ->> broker: subscribe to user_vacancy_data
+activate broker #cccccc
+broker -->> server: subscription ack
+deactivate broker
 opt incoming sensor data
 [->> client:
 activate client #cccccc
 note over client: Processes sensor data\n and publishes results in\n a new topic.
-client ->> mqtt_c: publish to user_vacancy_data
+client ->> broker: publish to user_vacancy_data
 deactivate client
-activate mqtt_c #cccccc
-mqtt_c ->> mqtt_s: publish to user_vacancy_data
-deactivate mqtt_c #cccccc
-activate mqtt_s #cccccc
-mqtt_s ->> server: on_message() callback
-deactivate mqtt_s
+# activate broker #cccccc
+# mqtt_c ->> mqtt_s: publish to user_vacancy_data
+# deactivate broker #cccccc
+activate broker #cccccc
+broker ->> server: on_message() callback
+deactivate broker
 activate server #cccccc
 server ->> db: create new entry
 activate db #cccccc
