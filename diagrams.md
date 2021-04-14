@@ -46,7 +46,7 @@ Sequence diagram for client-server interaction:
 title Raspberry PI - Server Interaction
 
 participantgroup #eeeeee **Client**
-participant "++RasPI Business Logic++" as client
+participant "++Light Guide Home++" as client
 # participant "++MQTT Publisher++" as mqtt_c
 end
 
@@ -54,7 +54,7 @@ participant "++MQTT Broker++" as broker
 
 participantgroup #eeeeee **Server**
 #participant "++MQTT Subscriber++" as mqtt_s
-participant "++Server Business Logic++" as server
+participant "++LG Web Server++" as server
 participant "++Database Manager" as db
 end
 
@@ -92,52 +92,33 @@ title Server - Caregiver PC Interaction
 
 participantgroup #eeeeee Server
 participant "Database Manager" as db
-participant "Server Business Logic" as s_logic
-participant "Web API" as api
+participant "LG Web Server" as s_logic
+//vparticipant "Web API" as api
 end
 
 participantgroup #eeeeee Caregiver Browser
-participant "Browser\nHTTP Handler" as http
-participant "Vue.js Component" as vue
-participant "DOM" as dom
+// participant "Browser\nHTTP Handler" as http
+//participant "Vue.js Component" as vue
+//participant "DOM" as dom
+participant "LG Web App" as vue
 end
 
-http ->> api: HTTP GET page
-activate api #cccccc
-api -->> http:
-deactivate api
-activate http #cccccc
-http -->> *dom:
-http -->> *vue:
-deactivate http
+
+]-->> *vue: GET web page from 3rd party host
 
 opt caregiver interacts with page element
-dom ->> vue: user interagtion
-activate vue #cccccc
-opt request requires server involvement
-vue ->> api: HTTP request
-deactivate vue
-activate api #cccccc
-opt request requires database access
-api -> s_logic: query
-deactivate api
+vue ->> s_logic: user interagtion
 activate s_logic #cccccc
+opt request requires database access
 s_logic -> db: query
 deactivate s_logic
 activate db #cccccc
 db --> s_logic: query result
-deactivate db
 activate s_logic #cccccc
-s_logic --> api: query result
+deactivate db
+end
+s_logic -->> vue: HTTP response
 deactivate s_logic
-activate api #cccccc
-end
-api -->> vue: HTTP response
-deactivate api
-activate vue #cccccc
-end
-vue -->> dom: update graphics
-deactivate vue
 end
 ````
 
