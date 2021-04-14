@@ -2,14 +2,13 @@ Sequence diagram for local system:
 ````
 title Sensor - Raspberry PI Interaction
 
-participant "++Light Guide Controller++" as ctrl
+participant "++Light Guide Home++" as ctrl
 participant "++MQTT Broker++" as mqtt
 participant "++Zigbee Coordinator++" as zb
 participant "++PIR Sensor++" as pir
 participant "++Light Strip++" as light
 
 ctrl ->> mqtt: subscribe to pir_sensor
-// TODO: maybe change "Light Guide" to product name
 
 loop
 pir -> pir: detect movement
