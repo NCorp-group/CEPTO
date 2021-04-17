@@ -1,0 +1,22 @@
+[
+    {
+        "Sensor" : "Sensor1",
+        "LightStrip" : "LightStrip1"
+    },
+    {
+        "Sensor" : "Sensor2",
+        "LightStrip" : "LightStrip2"
+    },
+    {
+        "Sensor" : "Sensor3",
+        "LightStrip" : "LightStrip3"
+    },
+    {
+        "Sensor" : "Sensor4",
+        "LightStrip" : "LightStrip4"
+    },
+    {
+        "Sensor" : "Sensor5",
+        "LightStrip" : "LightStrip5"
+    }
+]
