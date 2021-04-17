@@ -1,5 +1,3 @@
-import threading
-
 from threading import Thread
 
 class DummyHome:
@@ -10,17 +8,18 @@ class DummyHome:
 
     def increment(self):
         self.a = self.a + 1
-        print("Inremented a:", self.a)
 
     def thrd(this):
-        for x in range(0,100000):
+        for x in range(0,30000):
             this.increment()
+            print("Incremented a")
 
 home = DummyHome()
 home.increment()
 
 thrd = Thread(target = home.thrd)
 thrd.start()
+while(thrd.is_alive()):
+    print(home.a)
 thrd.join()
 print("Thread is done")
-print(home.a)
