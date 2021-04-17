@@ -2,14 +2,13 @@ Sequence diagram for local system:
 ````
 title Sensor - Raspberry PI Interaction
 
-participant "++Light Guide Controller++" as ctrl
+participant "++Light Guide Home++" as ctrl
 participant "++MQTT Broker++" as mqtt
 participant "++Zigbee Coordinator++" as zb
 participant "++PIR Sensor++" as pir
 participant "++Light Strip++" as light
 
 ctrl ->> mqtt: subscribe to pir_sensor
-// TODO: maybe change "Light Guide" to product name
 
 loop
 pir -> pir: detect movement
@@ -47,32 +46,36 @@ Sequence diagram for client-server interaction:
 title Raspberry PI - Server Interaction
 
 participantgroup #eeeeee **Client**
-participant "++RasPI Business Logic++" as client
-participant "++MQTT Publisher++" as mqtt_c
+participant "++Light Guide Home++" as client
+# participant "++MQTT Publisher++" as mqtt_c
 end
 
+participant "++MQTT Broker++" as broker
+
 participantgroup #eeeeee **Server**
-participant "++MQTT Subscriber++" as mqtt_s
-participant "++Server Business Logic++" as server
+#participant "++MQTT Subscriber++" as mqtt_s
+participant "++LG Web Server++" as server
 participant "++Database Manager" as db
 end
 
-server ->> mqtt_s: subscribe to user_vacancy_data
-activate mqtt_s #cccccc
-mqtt_s -->> server: subscription ack
-deactivate mqtt_s
+note over client,server: MQTT is distributed between client and server.
+
+server ->> broker: subscribe to user_vacancy_data
+activate broker #cccccc
+broker -->> server: subscription ack
+deactivate broker
 opt incoming sensor data
 [->> client:
 activate client #cccccc
 note over client: Processes sensor data\n and publishes results in\n a new topic.
-client ->> mqtt_c: publish to user_vacancy_data
+client ->> broker: publish to user_vacancy_data
 deactivate client
-activate mqtt_c #cccccc
-mqtt_c ->> mqtt_s: publish to user_vacancy_data
-deactivate mqtt_c #cccccc
-activate mqtt_s #cccccc
-mqtt_s ->> server: on_message() callback
-deactivate mqtt_s
+# activate broker #cccccc
+# mqtt_c ->> mqtt_s: publish to user_vacancy_data
+# deactivate broker #cccccc
+activate broker #cccccc
+broker ->> server: on_message() callback
+deactivate broker
 activate server #cccccc
 server ->> db: create new entry
 activate db #cccccc
@@ -89,52 +92,33 @@ title Server - Caregiver PC Interaction
 
 participantgroup #eeeeee Server
 participant "Database Manager" as db
-participant "Server Business Logic" as s_logic
-participant "Web API" as api
+participant "LG Web Server" as s_logic
+//vparticipant "Web API" as api
 end
 
 participantgroup #eeeeee Caregiver Browser
-participant "Browser\nHTTP Handler" as http
-participant "Vue.js Component" as vue
-participant "DOM" as dom
+// participant "Browser\nHTTP Handler" as http
+//participant "Vue.js Component" as vue
+//participant "DOM" as dom
+participant "LG Web App" as vue
 end
 
-http ->> api: HTTP GET page
-activate api #cccccc
-api -->> http:
-deactivate api
-activate http #cccccc
-http -->> *dom:
-http -->> *vue:
-deactivate http
+
+]-->> *vue: GET web page from 3rd party host
 
 opt caregiver interacts with page element
-dom ->> vue: user interagtion
-activate vue #cccccc
-opt request requires server involvement
-vue ->> api: HTTP request
-deactivate vue
-activate api #cccccc
-opt request requires database access
-api -> s_logic: query
-deactivate api
+vue ->> s_logic: user interagtion
 activate s_logic #cccccc
+opt request requires database access
 s_logic -> db: query
 deactivate s_logic
 activate db #cccccc
 db --> s_logic: query result
-deactivate db
 activate s_logic #cccccc
-s_logic --> api: query result
+deactivate db
+end
+s_logic -->> vue: HTTP response
 deactivate s_logic
-activate api #cccccc
-end
-api -->> vue: HTTP response
-deactivate api
-activate vue #cccccc
-end
-vue -->> dom: update graphics
-deactivate vue
 end
 ````
 
