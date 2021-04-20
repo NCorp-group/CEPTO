@@ -35,58 +35,84 @@ logger.warning('this is a warning')
 def insert_toilet_event_into_db(toilet_event: Dict[str, Dict[str, Any]]) -> None:
 	"""
 	example object
-	"""
-	pass
-
-
-
-try:
-	opts = {
-		"host": config['DB_HOST'],
-		"port": MARIADB_PORT,
-		"user": config['DB_USER'],
-		"password": config['DB_PASS'],
-		"database": DB
+	toilet_event = {
+		"name": "Elderly",
+		"age": 70,
+		event = {
+			"day": TODO,
+			'leaving_bed': timestamp.now(),
+			''arriving_at_toilet' : timestamp.now(),
+			'leaving_toilet': timestamp.now(),
+			'arriving_at_bed': timestamp.now()
+		}
 	}
-	with connect(**opts) as conn:
-		with conn.cursor() as cursor:
-			# cursor.execute(use_db_query)
-			cursor.execute('SELECT * FROM users')
-			for row in cursor:
-				print(row)
-			# cursor.execute("INSERT INTO users(full_name, age) VALUES('Henrik', 56)")
-			# conn.commit()
-			# conn.rollback()
+	an exception of type ValueError will be trown, if the toilet_event does not adhere to
+	this.
+	"""
 
-		insert_toilet_visit_query = """
-		INSERT INTO events(day, leaving_bed, arriving_at_toilet, leaving_toilet, arriving_at_bed)
-		VALUES( %s, %s, %s, %s, %s )
-		"""
+	# TODO do type check
 
-		toilet_visit_records = [
-			# (time.day)
-		]
+	try:
+		opts = {
+			"host": config['DB_HOST'],
+			"port": MARIADB_PORT,
+			"user": config['DB_USER'],
+			"password": config['DB_PASS'],
+			"database": DB
+		}
+		with connect(**opts) as conn:
+			with conn.cursor() as cursor:
+				# cursor.execute(use_db_query)
+				cursor.execute('SELECT * FROM users')
+				for row in cursor:
+					print(row)
+				# cursor.execute("INSERT INTO users(full_name, age) VALUES('Henrik', 56)")
+				# conn.commit()
+				# conn.rollback()
 
-except Error as e:
-	print(e)
-	raise e
+			insert_toilet_visit_query = """
+			INSERT INTO events(day, leaving_bed, arriving_at_toilet, leaving_toilet, arriving_at_bed)
+			VALUES( %s, %s, %s, %s, %s )
+			"""
 
-# with connect(host="localhost", )
+			toilet_visit_records = [
+				# (time.day)
+			]
+
+	except Error as e:
+		print(e)
+		raise e
+
+
+
 
 # The callback for when the client receives a CONNACK response from the server.
 def on_connect(client, userdata, flags, rc):
-    print("Connected to the broker with result code " + str(rc))
+    logging.info(f"Connected to the broker with result code: {str(rc)}")
 
     # Subscribing in on_connect() means that if we lose the connection and
     # reconnect then subscriptions will be renewed.
-    client.subscribe(SUB_TOPIC)
+    result, msg_id = client.subscribe(SUB_TOPIC)
+	if result is not mqtt.MQTT_ERR_SUCCESS:
+		logging.critical(f'Subscription to topic: {SUB_TOPIC} failed, msg_id is: {msg_id}')
+
+
 
 # The callback for when a PUBLISH message is received from the server.
 def on_message(client, userdata, msg):
+	logging.info(f'Message received on topic: {msg.topic}')
+    
+	try:
+		toilet_event = json.loads(msg.payload)    # json.JSONDecoderError
+		insert_toilet_event_into_db(toilet_event) # ValueError
+	except json.JSONDecodeError as e:
+		logging.exception(e)
+	except ValueError as e:
+		logging.exception(e)
 
 
-    print(msg.topic + " " + str(msg.payload))
-	# insert_toilet_event_into_db()
+
+
 
 
 mqtt_client = mqtt.Client()
