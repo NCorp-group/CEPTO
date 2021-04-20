@@ -14,14 +14,16 @@ class LightGuard:
         self.mqtt_server_ip = "127.0.0.1"
         self.mqtt_server_port = 1883
 
-        self.PIR_occupancy = []
-        self.LED_state = []
-        self.VIB_state = 0
+
+        # The model
+        self.pir_occupancy = []
+        self.led_state = []
+        self.vib_state = False  # Not done
 
         for i in len(self.zones):
-            self.PIR_occupancy.append(0)
-            self.turn_light_off(self.zones[i]['LED'])
-            self.LED_state.append(0)
+            self.PIR_occupancy.append(False)
+            self.turn_light_off(self.zones[i]['led'])
+            self.LED_state.append(False)
 
         self.start()
 
@@ -29,11 +31,20 @@ class LightGuard:
         sub = mqtt.Client()
         sub.connect(self.mqtt_server_ip, self.mqtt_server_port)
         for i in len(self.zones):
-            sub.subscribe(f"zigbee2mqtt/{self.zones[i]['PIR']}", 1)
-        sub.subscribe(f"zigbee2mqtt/{self.zones[0]['VIB']}", 1)
+            sub.subscribe(f"zigbee2mqtt/{self.zones[i]['pir']}", 1)
+        sub.subscribe(f"zigbee2mqtt/{self.zones[0]['vib']}", 1)
         sub.on_message = self.on_message
 
     def on_message(self, client, userdata, msg):
+        dictionary = json.loads(msg.payload)    # The message itself
+
+        if(msg.topic.find("pir")):
+            for i in len(self.zones):
+                if(msg.topic == f"zigbee2mqtt/{self.zones[i]['pir']}"):
+                    self.PIR_occupancy[i] = dictionary["occupancy"]
+        elif(msg.topic.find("vib")):
+            
+        
         
 
     def turn_light_off(self, PIR_fname):
