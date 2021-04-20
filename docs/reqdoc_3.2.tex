@@ -1,0 +1,482 @@
+\input{preamble}
+
+\title{\textbf{Requirement Specification} \\
+       \large Computer Engineering Project 2}
+\author{
+  Høigaard Jensen, Jens\\
+  201907928@uni.au.dk
+  \and
+  Dounato, Kevork Christian\\
+  201907831@uni.au.dk
+  \and
+  Plagborg Bak Sørensen, Kristoffer\\
+  201908140@uni.au.dk
+  \and
+  Panieri, Lorenzo\\
+  201900275@uni.au.dk
+  \and
+  Sonne Pallesen, Pernille\\
+  201909457@uni.au.dk}
+\date{\today}
+
+\begin{document}
+
+\maketitle
+
+\section*{Version History}
+    \begin{table}[H]
+        \centering
+        \begin{tabular}{|p{0.09\textwidth}|p{0.12\textwidth}|p{0.1\textwidth}|p{0.58\textwidth}|}
+            \hline
+            \textbf{Version} & \textbf{Date} & \textbf{Editor} & \textbf{Changes}\\
+            \hline
+            \hline
+            0.1.0 & 17-02-2021 & Everyone & Use case diagram and use cases.\\
+            \hline
+            0.2.0 & 23-02-2021 & Everyone & Small changes in use cases. Test procedure for the main scenarios.\\
+            \hline
+            0.2.1 & 24-02-2021 & Everyone & Fixing layout. Finished test procedure. This version has been approved by peer team.\\
+            \hline
+            0.3.0 & 24-03-2021 & Everyone & Updated use cases according to feedback. Adding extensions to main scenarios.\\
+            \hline
+            0.3.1 & 06-04-2021 & Everyone & Added an extra use case to decompose.\\
+            \hline
+            0.3.2 & 07-04-2021 & Everyone & Updated use case diagram, extensions and test procedure to account for the new use case. Elaborated figure text for use case diagram. Added references, purpose and scope.\\
+            \hline
+        \end{tabular}
+        \caption{Version history for this document}
+        \label{tab:my_label}
+    \end{table}
+
+\pagebreak
+\tableofcontents
+
+\hypersetup{
+    linkcolor=winered,
+}
+
+\newpage
+\section{Introduction}
+\subsection{Purpose}
+This document provides a requirement specification for the CEPTO LightGuide. The document is developed for the 2021 Computer Engineering Project 2 course, and is based on the requirements outlined in the project introduction slides\cite{proj-desc}. The requirements on slide 15 of the project introduction slides\cite{proj-desc} are elaborated and categorised as functional and non-functional.
+% Functional requirements are use case driven
+\subsection{Scope}
+    Both functional and non-functional requirements are described in this document. The functional requirements are specifically use case driven, and therefore derived from all use cases that describe the intended system behaviour. The document will encompass a UML use case diagram, an in depth description of each use case and how the system will behave during each of these. A test procedure is also described for each functional requirement.
+
+\section{Use Cases}
+\label{sec:use_cases}
+    \begin{figure}[H]
+        \centering
+        \includegraphics[width=\textwidth]{img/use_case_diag_v5.png}
+        \caption{UML Use Case diagram. The main Use Case is UC1, which includes UC2, UC3, UC4, UC5, UC6, and UC7 as sub use cases. In this sense UC1 is the user taking action to leave their bed, go to the bathroom, and return to bed afterwards. UC2 is the specific action of entering a zone, which triggers the use cases that are interacted with by the PIR sensor and light strip; UC3, UC5, and eventually UC4. When the user reaches specific milestones, events are logged in UC7, where the vibration sensor specifically detects when the user is in bed in UC6. The caregiver can retrieve logs from the system and they will receive a notification from the system if something goes wrong during the bathroom visit.}
+        \label{fig:use-case-diag}
+    \end{figure}
+    
+    \begin{comment}
+    LEAVE THIS EMPTY, IT'S A TEMPLATE\\
+    \begin{tabular}{|p{0.18\textwidth}||p{0.75\textwidth}|}
+        \hline
+        \textbf{Name} &  \\
+        \hline
+        \textbf{Use Case ID} & \\
+        \hline
+        \textbf{Primary Actor} & \\
+        \hline
+        \textbf{Stakeholders} & \\
+        \hline
+        \textbf{Pre-condition} & \\
+        \hline
+        \textbf{Post-condition} & \\
+        \hline
+        \textbf{Main Scenario} & \\
+        \hline
+        \textbf{Extensions} & \\
+        \hline
+    \end{tabular}
+    \end{comment}
+    
+\begin{comment}
+UC1: Be guided to bathroom 
+UC2: Be guided to bed
+UC3: Detect movement (unchanged)
+UC4: Turn on light strip
+UC5: Turn off light strip
+UC6: Detect user returned to bed
+UC7: Notify accident (unchanged)
+UC8: Retrive logs
+\end{comment}
+
+\subsection{UC1: Visit Bathroom}
+    \begin{tabular}{|p{0.18\textwidth}||p{0.75\textwidth}|}
+        \hline
+        \textbf{Name} & Visit bathroom \\
+        \hline
+        \textbf{Use Case ID} & UC1 \\
+        \hline
+        \textbf{Primary Actor} & User\\
+        \hline
+        \textbf{Stakeholders} & User, PIR sensor, vibration sensor\\
+        \hline
+        \textbf{Pre-condition} & User is in bed.\\
+        \hline
+        \textbf{Post-condition} & User returned to bed.\\
+        \hline
+        \textbf{Main Scenario} & 
+            \begin{enumerate}
+                \item User leaves bed.
+                \item Log leaving bed, refer to UC7.
+                \item User follows path to bathroom.
+                \item User enters the bathroom.
+                \item Log entering bathroom, refer to UC7.
+                \item User leaves bathroom.
+                \item Log leaving bathroom, refer to UC7.
+                \item User follows path to bed.
+                \item User reaches the bed and lies down.
+                \item Log returning to bed, refer to UC7.
+            \end{enumerate}\\
+        \hline
+        \textbf{Extensions} &
+        \textit{Extension 3-3a: User deviates from path.}
+        
+        \begin{enumerate}
+            \setcounter{enumi}{2}
+            \item User deviates from path along the way.
+            \item User continues at step 3.
+        \end{enumerate}
+        
+        \vspace{4mm}
+        \hline
+        \vspace{2mm}
+        
+        \textit{Extension 3-8a: User deviates from path.}
+        
+        \begin{enumerate}
+            \setcounter{enumi}{3}
+            \item User deviates from path along the way.
+            \item User continues at step 8.
+        \end{enumerate}
+        
+        \vspace{4mm}
+        \hline
+        \vspace{2mm}
+        
+        \textit{Extension 8-8a: User deviates from path.}
+        
+        \begin{enumerate}
+            \setcounter{enumi}{7}
+            \item User deviates from path along the way.
+            \item User continues at step 8.
+        \end{enumerate}
+        
+        \vspace{4mm}
+        \hline
+        \vspace{2mm}
+        
+        \textit{Extension 3-10a: User deviates and does not arrive in bathroom.}
+        
+        \begin{enumerate}
+            \setcounter{enumi}{3}
+            \item User deviates from path.
+            \item User does not return to path.
+            \item User does not enter bathroom.
+            \item Caregiver receives notification, refer to UC8.
+        \end{enumerate}
+        
+        \vspace{4mm}
+        \hline
+        \vspace{2mm}
+        
+        \textit{Extension 6-10a: User does not leave the bathroom.}
+        
+        \begin{enumerate}
+            \setcounter{enumi}{5}
+            \item User is stuck in the bathroom.
+            \item Caregiver receives notification, refer to UC8.
+        \end{enumerate}\\
+        \hline
+    \end{tabular}
+    % leaves bed, goes to bathroom, returns (main scenario)
+    % leaves bed, goes somewhere else, returns
+    % leaves bed, goes to the bathroom, but skips some zones, returns
+    % leaves bed, goes to bathroom, does not return
+    % leaves bed, goes somewhere else, does not return
+    % leaves bed, goes to bathroom, but skips some zones, does not return
+    % leaves bed, goes to bathroom, system shuts off before they return (timeout)
+    % leaves bed, goes somewhere else, system shuts off before they return
+    % leaves bed, goes to the bathroom, but skips some zones, system shuts off before they return.
+
+\subsection{UC2: Move to Zone}
+    \begin{tabular}{|p{0.18\textwidth}||p{0.75\textwidth}|}
+        \hline
+        \textbf{Name} & Move to zone \\
+        \hline
+        \textbf{Use Case ID} & UC2 \\
+        \hline
+        \textbf{Primary Actor} & User \\
+        \hline
+        \textbf{Stakeholders} & User, PIR sensor, light strip \\
+        \hline
+        \textbf{Pre-condition} & UC1 is in progress. \\
+        \hline
+        \textbf{Post-condition} & User is no longer in zone. \\
+        \hline
+        \textbf{Main Scenario} &
+        \begin{enumerate}
+            \item User enters zone.
+            \item Detect movement, refer to UC3.
+            \item User leaves zone.
+            \item Turn off light strip, refer to UC4.
+        \end{enumerate}
+        \\
+        \hline
+        \textbf{Extensions} & - \\
+        \hline
+    \end{tabular}
+    
+\subsection{UC3: Detect Movement}
+    \begin{tabular}{|p{0.18\textwidth}||p{0.75\textwidth}|}
+        \hline
+        \textbf{Name} & Detect movement. \\
+        \hline
+        \textbf{Use Case ID} & UC3 \\
+        \hline
+        \textbf{Primary Actor} & PIR sensor \\
+        \hline
+        \textbf{Stakeholders} & PIR sensor, user, light strip \\
+        \hline
+        \textbf{Pre-condition} & UC2 is in progress. \\
+        \hline
+        \textbf{Post-condition} & Light strips of occupant and next zone are turned on. \\
+        \hline
+        \textbf{Main Scenario} & 
+            \begin{enumerate}
+                \item Movement of the user is detected in a zone.
+                \item Refer to UC5.
+            \end{enumerate}
+            \\
+        \hline
+        \textbf{Extensions} & - \\
+        \hline
+    \end{tabular}
+    
+
+    \subsection{UC4: Turn Off Light Strip}
+    \begin{tabular}{|p{0.18\textwidth}||p{0.75\textwidth}|}
+        \hline
+        \textbf{Name} &  Turn off light strip.\\
+        \hline
+        \textbf{Use Case ID} & UC4\\
+        \hline
+        \textbf{Primary Actor} & Light strip\\
+        \hline
+        \textbf{Stakeholders} & User, light strip, PIR sensor\\
+        \hline
+        \textbf{Pre-condition} &  UC2 is in progress and UC5 is completed. \\
+        %# Define neighborhood to be the corresponding PIR sensor and it's adjacent.
+        %A PIR sensor outside the neighborhood has detected movement.
+        
+        
+        % seng [ 1, 2, 3, 4, 5 ] toilet
+        % sensor_id 
+        % for i in range(len(sensor_vector)):
+        %     if i == sensor_id or i == sensor_id + 1 or sensor_id - 1 then
+        %           turn on
+        %     else
+        %           turn off
+        \hline
+        \textbf{Post-condition} & The light strips not in occupant or next zone are turned off.\\
+        \hline
+        \textbf{Main Scenario} & 
+            \begin{enumerate}
+                \item A new zone is occupied.
+                \item Turn off the light strip.
+            \end{enumerate}
+        \\
+        \hline
+        \textbf{Extensions} &
+        \textit{Extension 1-1a: User deviates from path.}
+        
+        \begin{enumerate}
+            \setcounter{enumi}{0}
+            \item Zone is no longer occupied and movement isn't detected along the path.
+            \item Wait for occupancy false on PIR sensor.
+            \item Continue at step 2 in main scenario.
+        \end{enumerate}
+        \\
+        \hline
+    \end{tabular}
+
+\subsection{UC5: Turn On Light Strip}
+    \begin{tabular}{|p{0.18\textwidth}||p{0.75\textwidth}|}
+        \hline
+        \textbf{Name} & Turn on light strip. \\
+        \hline
+        \textbf{Use Case ID} & UC5 \\
+        \hline
+        \textbf{Primary Actor} & Light strip \\
+        \hline
+        \textbf{Stakeholders} & User, PIR sensor, light strip \\
+        \hline
+        \textbf{Pre-condition} & UC3 has happened. \\
+        \hline
+        \textbf{Post-condition} & Light strips of both occupant and next zone are turned on. \\
+        \hline
+        \textbf{Main Scenario} &
+            \begin{enumerate}
+                \item Light strips of both occupant and next zone are turned on.
+            \end{enumerate}
+        \\
+        \hline
+        \textbf{Extensions} & - \\
+        \hline
+    \end{tabular}
+    
+    
+    \subsection{UC6: Detect User In Bed}
+    \begin{tabular}{|p{0.18\textwidth}||p{0.75\textwidth}|}
+        \hline
+        \textbf{Name} & Detect user in bed \\
+        \hline
+        \textbf{Use Case ID} & UC6 \\
+        \hline
+        \textbf{Primary Actor} & User \\
+        \hline
+        \textbf{Stakeholders} & User, vibration sensor \\
+        \hline
+        \textbf{Pre-condition} & -\\
+        \hline
+        \textbf{Post-condition} & All light strips are turned off \\
+        \hline
+        \textbf{Main Scenario} &
+            \begin{enumerate}
+                \item User sits on bed or lays down in bed.
+                \item After 90 seconds the light strips turn off.
+            \end{enumerate}
+        \\
+        \hline
+        \textbf{Extensions} & - \\
+        \hline
+    \end{tabular}
+
+ 
+   
+    \subsection{UC7: Log events} 
+    \begin{tabular}{|p{0.18\textwidth}||p{0.75\textwidth}|}
+        \hline
+        \textbf{Name} &  Log events\\
+        \hline
+        \textbf{Use Case ID} & UC7 \\
+        \hline
+        \textbf{Primary Actor} & User \\
+        \hline 
+        \textbf{Stakeholders} & User \\
+        \hline
+        \textbf{Pre-condition} & UC1 is in progress. User leaves bed, returns to bed, enters bathroom or leaves bathroom. \\
+        \hline
+        \textbf{Post-condition} & Event has been logged. \\
+        \hline
+        \textbf{Main Scenario} & 
+            \begin{enumerate}
+                \item Log event.
+            \end{enumerate}
+        \\
+        \hline
+        \textbf{Extensions} & - \\
+        \hline
+    \end{tabular}
+    
+    \subsection{UC8: Receive Notification}
+    \begin{tabular}{|p{0.18\textwidth}||p{0.75\textwidth}|}
+        \hline
+        \textbf{Name} & Receive notification\\
+        \hline
+        \textbf{Use Case ID} & UC8\\
+        \hline
+        \textbf{Primary Actor} & Caregiver\\
+        \hline
+        \textbf{Stakeholders} & Caregiver, vibration sensor\\
+        \hline
+        \textbf{Pre-condition} & Extension UC1.3-10a or UC1.6-10a is triggered.\\
+        \hline
+        \textbf{Post-condition} & Caregiver is notified of a possible accident. \\
+        \hline
+        \textbf{Main Scenario} &
+            \begin{enumerate}
+                \item User does not return to bed within 30 minutes from having left the bed.
+                \item Caregiver is notified that the user might have gotten hurt.
+            \end{enumerate}
+        \\
+        \hline
+        \textbf{Extensions} &
+        \textit{Extension 2-2a: User returns after the caregiver is notified.}
+        
+        \begin{enumerate}
+            \setcounter{enumi}{1}
+            \item Caregiver is notified that the user might have gotten hurt.
+            \item The user returns to bed after the 30 minutes have passed.
+            \item Caregiver is notified of this change.
+        \end{enumerate}\\
+        \hline
+    \end{tabular}
+    
+    \subsection{UC9: Retrieve Logs}
+    \begin{tabular}{|p{0.18\textwidth}||p{0.75\textwidth}|}
+        \hline
+        \textbf{Name} & Retrieve logs\\
+        \hline
+        \textbf{Use Case ID} & UC9\\
+        \hline
+        \textbf{Primary Actor} & Caregiver\\
+        \hline
+        \textbf{Stakeholders} & Caregiver\\
+        \hline
+        \textbf{Pre-condition} & - \\
+        \hline
+        \textbf{Post-condition} & Caregiver can read the logs. \\
+        \hline
+        \textbf{Main Scenario} &
+            \begin{enumerate}
+                \item Caregiver opens application, and is shown login view.
+                \item Caregiver logs in with username and password.
+                \item Caregiver is shown the main view (the dashboard)
+                \item The dashboard contains the latest entries.
+                \item Caregiver views full logs.
+                \item All the entries for the caregiver's user are shown.
+                \item Caregiver returns to main view.
+                \item The dashboard contains the latest entries.
+                \item Caregiver logs out.
+                \item Caregiver's session is terminated.
+            \end{enumerate}
+        \\
+        \hline
+        \textbf{Extensions} &
+        \textit{Extension 2-2a: Caregiver enters wrong credentials.}
+        
+        \begin{enumerate}
+            \setcounter{enumi}{1}
+            \item Caregiver tries logging in while having entered incorrect credentials.
+            \item Caregiver can try with new credentials, from step 2.
+        \end{enumerate}\\
+        \hline
+    \end{tabular}
+
+\newpage
+\section{Non-Functional Requirements}
+\subsection{Web Application for Monitoring}
+    A web portal for data monitoring will grant the user cross-platform viewing support from any device with an internet connection and a browser.
+    
+\subsection{Web Application Information}
+    The web application should show the following information
+    \begin{itemize}
+        \item Time the person left the bed
+        \item Time it took to reach the bathroom
+        \item Time the person stayed in the bathroom
+        \item Time it took to reach the bed
+        \item Indicator if the person has not returned to bed for 30 minutes
+    \end{itemize}
+    
+\subsection{Automatically Activate System from 22:00 to 09:00}
+    
+\printbibliography
+
+\end{document}
