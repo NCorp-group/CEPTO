@@ -18,14 +18,19 @@ class LightGuard:
         # The model
         self.pir_occupancy = []
         self.led_state = []
-        self.vib_state = False  # Not done
+        self.vib_state = False  # Not a bool
 
         for i in len(self.zones):
             self.PIR_occupancy.append(False)
             self.turn_light_off(self.zones[i]['led'])
             self.LED_state.append(False)
 
-        self.start()
+        # Starting routine
+        self.subscriber_thread = Thread(target=self.start, daemon=True)
+        # Thread callback away from main process
+        self.subscriber_thread.start()
+        # This is the main logic
+        logic()
 
     def start(self):
         sub = mqtt.Client()
@@ -34,19 +39,21 @@ class LightGuard:
             sub.subscribe(f"zigbee2mqtt/{self.zones[i]['pir']}", 1)
         sub.subscribe(f"zigbee2mqtt/{self.zones[0]['vib']}", 1)
         sub.on_message = self.on_message
+        print("Waiting for events")
+        sub.loop_forever()
 
     def on_message(self, client, userdata, msg):
         dictionary = json.loads(msg.payload)    # The message itself
 
-        if(msg.topic.find("pir")):
+        if("pir" in msg.topic):
             for i in len(self.zones):
                 if(msg.topic == f"zigbee2mqtt/{self.zones[i]['pir']}"):
                     self.PIR_occupancy[i] = dictionary["occupancy"]
-        elif(msg.topic.find("vib")):
-            
+        #elif("vib" in msg.topic): # TODO
         
-        
+    def logic():
 
+    
     def turn_light_off(self, PIR_fname):
         print("Turning light off")
         pub = mqtt.Client()
