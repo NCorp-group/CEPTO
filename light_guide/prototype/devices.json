@@ -1,0 +1,23 @@
+[
+    {
+        "PIR" : "PIR_FNAME",
+        "LED" : "LED_FNAME",
+        "VIB" : "VIB_FNAME"
+    },
+    {
+        "PIR" : "PIR_FNAME",
+        "LED" : "LED_FNAME"
+    },
+    {
+        "PIR" : "PIR_FNAME",
+        "LED" : "LED_FNAME"
+    },
+    {
+        "PIR" : "PIR_FNAME",
+        "LED" : "LED_FNAME"
+    },
+    {
+        "PIR" : "PIR_FNAME",
+        "LED" : "LED_FNAME"
+    }
+]
