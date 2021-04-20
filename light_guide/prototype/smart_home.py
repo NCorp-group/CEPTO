@@ -1,8 +1,5 @@
 import paho.mqtt.client as mqtt
 import json
-import signal
-from threading import Event, Thread
-import time
 
 class SmartHome:
 
@@ -22,9 +19,7 @@ class SmartHome:
         self.light_state = False
 
         # Starting routine
-        self.subscriber_thread = Thread(target=self.start, daemon=True)
-        self.subscriber_thread.start()
-        #self.start()
+        self.start()
     
     def turn_light_off(self):
         print("Turning light off")
@@ -38,16 +33,8 @@ class SmartHome:
         print("Turning light on")
         pub = mqtt.Client()
         pub.connect(self.mqtt_server_ip, self.mqtt_server_port)
-        message = {
-            "state": "ON",
-            "color": {
-            "x": 0.7025,
-            "y": 0.3737
-            }
-        }
-        #message = '{"state":"ON"}'
-        pub.publish("zigbee2mqtt/light_strip/set", json.dumps(message), 1)
-        #pub.publish("zigbee2mqtt/light_strip/set", message, 1)
+        message = '{"state":"ON"}'
+        pub.publish("zigbee2mqtt/light_strip/set", message, 1)
         pub.disconnect()
 
     def on_message(self, client, userdata, msg): # Updating the correct variables
@@ -69,27 +56,11 @@ class SmartHome:
         sub.loop_forever()
         
     def update_mqtt(self):
-        hour = int(time.strftime('%H'))
-        if(((self.pir1_occupancy == True or self.pir2_occupancy == True) and not(self.light_state)) and not ((hour >= 0 and hour <= 7) or (hour >= 23 and hour <= 24))):
+        if((self.pir1_occupancy == True or self.pir2_occupancy == True) and not(self.light_state)):
             self.turn_light_on()
             self.light_state = True
-        elif((self.pir1_occupancy == False and self.pir2_occupancy == False and self.light_state) or (hour >= 0 and hour <= 7) or (hour >= 23 and hour <= 24)): # Time between 23 and 7
+        elif(self.pir1_occupancy == False and self.pir2_occupancy == False and self.light_state):
             self.turn_light_off()
             self.light_state = False
 
-
 my_home = SmartHome() 
-
-stop_daemon = Event()
-
-def shutdown(signal, frame):
-    stop_daemon.set()
-
-signal.signal(signal.SIGHUP, shutdown)
-signal.signal(signal.SIGINT, shutdown)
-signal.signal(signal.SIGTERM, shutdown)
-
-while not stop_daemon.is_set():
-    stop_daemon.wait(60)
-
-my_home.turn_light_off()
