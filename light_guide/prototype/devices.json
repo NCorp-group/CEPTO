@@ -1,23 +1,23 @@
 [
     {
-        "PIR" : "PIR_FNAME",
-        "LED" : "LED_FNAME",
-        "VIB" : "VIB_FNAME"
+        "pir" : "pir_FNAME",
+        "light" : "light_FNAME",
+        "vib" : "vib_FNAME"
     },
     {
-        "PIR" : "PIR_FNAME",
-        "LED" : "LED_FNAME"
+        "pir" : "pir_FNAME",
+        "light" : "light_FNAME"
     },
     {
-        "PIR" : "PIR_FNAME",
-        "LED" : "LED_FNAME"
+        "pir" : "pir_FNAME",
+        "light" : "light_FNAME"
     },
     {
-        "PIR" : "PIR_FNAME",
-        "LED" : "LED_FNAME"
+        "pir" : "pir_FNAME",
+        "light" : "light_FNAME"
     },
     {
-        "PIR" : "PIR_FNAME",
-        "LED" : "LED_FNAME"
+        "pir" : "pir_FNAME",
+        "light" : "light_FNAME"
     }
 ]
