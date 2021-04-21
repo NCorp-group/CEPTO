@@ -51,6 +51,13 @@ class LightGuard:
         
 #    def logic():
 
+#    def event_leaving_bed():
+#    def event_arriving_at_toilet():
+#    def event_leaving_toilet():
+#    def event_arriving_at_bed():
+#    def event_notification():
+    #OPTIONAL: def event_leaving_path():
+
     
     def turn_light_off(self, PIR_fname):
         print("Turning light off")
