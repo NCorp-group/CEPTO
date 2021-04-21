@@ -18,7 +18,6 @@ class LightGuard:
         # The model
         self.pir_occupancy = []
         self.led_state = []
-        self.vib_state = False  # Not a bool
 
         for i in len(self.zones):
             self.PIR_occupancy.append(False)
@@ -30,7 +29,7 @@ class LightGuard:
         # Thread callback away from main process
         self.subscriber_thread.start()
         # This is the main logic
-        logic()
+#        logic()
 
     def start(self):
         sub = mqtt.Client()
@@ -49,9 +48,8 @@ class LightGuard:
             for i in len(self.zones):
                 if(msg.topic == f"zigbee2mqtt/{self.zones[i]['pir']}"):
                     self.PIR_occupancy[i] = dictionary["occupancy"]
-        #elif("vib" in msg.topic): # TODO
         
-    def logic():
+#    def logic():
 
     
     def turn_light_off(self, PIR_fname):
