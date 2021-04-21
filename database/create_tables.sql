@@ -1,17 +1,15 @@
 CREATE TABLE `users` (
-  `user_id` int PRIMARY KEY AUTO_INCREMENT,
-  `full_name` varchar(255),
-  `age` int
+  `id` int PRIMARY KEY AUTO_INCREMENT,
+  `full_name` varchar(255) NOT NULL,
+  `age` tinyint
 );
 
 CREATE TABLE `events` (
-  `event_id` int PRIMARY KEY,
-  `day` date NOT NULL,
-  `leaving_bed` timestamp,
-  `arriving_at_toilet` timestamp,
-  `leaving_toilet` timestamp,
-  `arriving_at_bed` timestamp,
-  `user_id` int UNIQUE NOT NULL
+  `id` int PRIMARY KEY AUTO_INCREMENT,
+  `event` ENUM ('leaving_bed', 'arriving_at_toilet', 'leaving_toilet', 'arriving_at_bed', 'notification', 'leaving_path') NOT NULL,
+  `time` datetime NOT NULL DEFAULT (now()),
+  `user_id` int
 );
 
-ALTER TABLE `events` ADD FOREIGN KEY (`user_id`) REFERENCES `users` (`user_id`);
+ALTER TABLE `events` ADD FOREIGN KEY (`user_id`) REFERENCES `users` (`id`);
+
