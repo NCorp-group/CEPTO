@@ -1,15 +1,21 @@
 CREATE TABLE `users` (
-  `id` int PRIMARY KEY AUTO_INCREMENT,
+  `user_id` int PRIMARY KEY AUTO_INCREMENT,
   `full_name` varchar(255) NOT NULL,
-  `age` tinyint
+  `date_of_birth` date
 );
 
 CREATE TABLE `events` (
-  `id` int PRIMARY KEY AUTO_INCREMENT,
-  `event` ENUM ('leaving_bed', 'arriving_at_toilet', 'leaving_toilet', 'arriving_at_bed', 'notification', 'leaving_path') NOT NULL,
-  `time` datetime NOT NULL DEFAULT (now()),
-  `user_id` int
+  `event_id` int PRIMARY KEY AUTO_INCREMENT,
+  `time_of_occurence` datetime NOT NULL DEFAULT "now()",
+  `user_id` int NOT NULL,
+  `event_type_id` int NOT NULL
 );
 
-ALTER TABLE `events` ADD FOREIGN KEY (`user_id`) REFERENCES `users` (`id`);
+CREATE TABLE `event_types` (
+  `event_type_id` int PRIMARY KEY AUTO_INCREMENT,
+  `event_type` varchar(255) UNIQUE NOT NULL COMMENT 'Represents and observable event in the LightGuide system e.g. user leaving bed'
+);
 
+ALTER TABLE `events` ADD FOREIGN KEY (`user_id`) REFERENCES `users` (`user_id`);
+
+ALTER TABLE `event_types` ADD FOREIGN KEY (`event_type_id`) REFERENCES `events` (`event_type_id`);
