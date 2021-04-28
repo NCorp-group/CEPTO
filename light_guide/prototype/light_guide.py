@@ -42,7 +42,7 @@ class LightGuard:
         print("Waiting for events")
         sub.loop_start()
 
-        logic()
+        self.logic()
 
     def on_message(self, client, userdata, msg):
         dictionary = json.loads(msg.payload)    # The message itself
