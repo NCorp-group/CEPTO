@@ -24,7 +24,7 @@ install_nodejs() {
 }
 
 install_and_setup_zigbee2mqtt() {
-    if [ -d /opt/zigbee2mqtt ] && [ systemctl status zigbee2mqtt 2&>1 /dev/null ]; then
+    if [ -d /opt/zigbee2mqtt ] && [ systemctl status zigbee2mqtt >/dev/null 2>&1 ]; then
         return
     fi
     
