@@ -1,127 +1,122 @@
-from mysql.connector import connect, Error
+import json
+import sys
+from typing import Dict, Any
+
+from mysql.connector import connect, Error as MysqlError
 import paho.mqtt.client as mqtt
 from dotenv import dotenv_values
-import signal
-import time
-from threading import Event, Thread
-from datetime import datetime
-import json
-import logging
-from typing import Dict, Any, List
+from loguru import logger
+
+# import pprint
+# pp = pprint.PrettyPrinter(indent=4)
 
 config = dotenv_values(".env")
 
-SUB_TOPIC = 'light_guide/events'
 MARIADB_PORT = 3306
-DB = 'testdb'
-
 MQTT_BROKER_PORT = 1883
 
+SUB_TOPIC = config['MOSQUITTO_SUB_TOPIC']
 
 log_opts = {
-	'level': logging.INFO,
-	'filename': 'app.log',
-	'filemode': 'w', # write, use 'a' for append
-	'format': '%(asctime)s - %(name)s - %(levelname)s - %(message)s',
-	'datefmt': '%d-%b-%y %H:%M:%S'
+    'format': "{time} {level} {message}",
+    'filter': __name__,
+    'level': 'INFO'
 }
 
-logging.basicConfig(**log_opts)
+logger.add(sys.stdout, colorize=True, **log_opts)
+# logger.add('file_{time}.log', **log_opts)
 
-logger = logging.getLogger(__name__)
-logger.warning('this is a warning')
+EVENTS = [
+    'leaving_bed',
+    'arriving_at_toilet',
+    'leaving_toilet',
+    'arriving_at_bed',
+    'notification'
+    'leaving_path' # OPTIONAL if we have time
+]
 
 
-def insert_toilet_event_into_db(toilet_event: Dict[str, Dict[str, Any]]) -> None:
-	"""
-	example object
-	"""
-	pass
+@logger.catch
+def insert_toilet_event_into_db(toilet_event: Dict[str, Any]) -> None:
+    """
+    example object
+    toilet_event = {
+        "event": EVENTS,
+        "user": {
+            "full_name": "Elderly",
+            "date_of_birth": '1940-01-01',
+        },
+    'time_of_occurence': '2021-04-24 23:22:56'
+    }
 
+    an exception of type ValueError will be trown, if the toilet_event does not adhere to
+    this.
+    """
+        
+    try:
+        opts = {
+            "host": config['DB_HOST'],
+            "port": MARIADB_PORT,
+            "user": config['DB_USER'],
+            "password": config['DB_PASS'],
+            "database": config['DB_NAME']
+        }
+        with connect(**opts) as conn:
+            logger.info(f"established connection with mariadb database: {config['DB_NAME']}")
+            with conn.cursor() as cursor:
+                try:
+                    insert_event_query = f"""
+                    INSERT INTO events(time_of_occurence, user_id, event_type_id)
+                    VALUES(
+                        '{toilet_event['time_of_occurence']}',
+                        (SELECT user_id FROM users WHERE full_name = '{toilet_event['user']['full_name']}'),
+                        (SELECT event_type_id FROM event_types WHERE event_type = '{toilet_event['event_type']}')
+                    );
+                    """
+                except KeyError as e:
+                    logger.error(f'could not find key: {e} in object toilet_event')
+                    return
 
+                cursor.execute(insert_event_query)
+                conn.commit()
+                logger.info(f"inserted event: '{toilet_event['event_type']}' into database")
 
-try:
-	opts = {
-		"host": config['DB_HOST'],
-		"port": MARIADB_PORT,
-		"user": config['DB_USER'],
-		"password": config['DB_PASS'],
-		"database": DB
-	}
-	with connect(**opts) as conn:
-		with conn.cursor() as cursor:
-			# cursor.execute(use_db_query)
-			cursor.execute('SELECT * FROM users')
-			for row in cursor:
-				print(row)
-			# cursor.execute("INSERT INTO users(full_name, age) VALUES('Henrik', 56)")
-			# conn.commit()
-			# conn.rollback()
+    except MysqlError as err:
+        logger.critical(f"Failure occured when interacting with mariadb database. error message: {err.msg}")
 
-		insert_toilet_visit_query = """
-		INSERT INTO events(day, leaving_bed, arriving_at_toilet, leaving_toilet, arriving_at_bed)
-		VALUES( %s, %s, %s, %s, %s )
-		"""
-
-		toilet_visit_records = [
-			# (time.day)
-		]
-
-except Error as e:
-	print(e)
-	raise e
-
-# with connect(host="localhost", )
 
 # The callback for when the client receives a CONNACK response from the server.
-def on_connect(client, userdata, flags, rc):
-    print("Connected to the broker with result code " + str(rc))
+def on_connect(client, userdata, flags, rc) -> None:
+    logger.info(f"Connected to the broker with result code: {str(rc)}")
 
     # Subscribing in on_connect() means that if we lose the connection and
     # reconnect then subscriptions will be renewed.
-    client.subscribe(SUB_TOPIC)
-
-# The callback for when a PUBLISH message is received from the server.
-def on_message(client, userdata, msg):
-
-
-    print(msg.topic + " " + str(msg.payload))
-	# insert_toilet_event_into_db()
+    result, msg_id = client.subscribe(SUB_TOPIC)
+    if result is not mqtt.MQTT_ERR_SUCCESS:
+        logger.critical(f'Subscription to topic: {SUB_TOPIC} failed, msg_id is: {msg_id}')
 
 
-mqtt_client = mqtt.Client()
-mqtt_client.on_connect = on_connect
-mqtt_client.on_message = on_message
 
-mqtt_client.enable_logger()
+def on_message(client, userdata, msg) -> None:
+    """The callback for when a PUBLISH message is received from the server."""
 
+    logger.info(f'Message received on topic: {msg.topic}')
 
-mqtt_client.connect(config['MOSQUITTO_HOST'], 1883, 60)
-
-# Blocking call that processes network traffic, dispatches callbacks and
-# handles reconnecting.
-# Other loop*() functions are available that give a threaded interface and a
-# manual interface.
-mqtt_client.loop_forever()
-
+    try:
+        toilet_event = json.loads(msg.payload)    # json.JSONDecoderError
+        insert_toilet_event_into_db(toilet_event)
+    except json.JSONDecodeError as err:
+        logger.error(f"Could not parse json msg.payload.")
 
 
 if __name__ == '__main__':
-	stop_daemon = Event()
+    logger.info('Starting logging:')
+    mqtt_client = mqtt.Client()
+    mqtt_client.on_connect = on_connect
+    mqtt_client.on_message = on_message
 
-	# def shutdown(signal, frame): 
-	# 	stop_daemon.set()
+    mqtt_client.connect(config['MOSQUITTO_HOST'], 1883, 60)
 
-	shutdown = lambda signal, frame: stop_daemon.set()
-
-	# Subscribe to signals sent from the terminal, so that the application is shutdown properly.
-    # When one of the trapped signals is captured, the function shutdown() will be execute. This
-    # will set the stop_daemon event that will then stop the loop that keeps the application running.
-    signal.signal(signal.SIGHUP, shutdown)
-    signal.signal(signal.SIGINT, shutdown)
-    signal.signal(signal.SIGTERM, shutdown)
-
-	while not stop_daemon.is_set():
-        # The event times out evey 60 seconds, or when the event is set. If it is set, then the loop
-        # will stop and the application will exit.
-        stop_daemon.wait(60)
+    # Blocking call that processes network traffic, dispatches callbacks and
+    # handles reconnecting.
+    mqtt_client.loop_forever()
