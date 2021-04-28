@@ -48,9 +48,6 @@ def insert_toilet_event_into_db(toilet_event: Dict[str, Any]) -> None:
         },
     'time_of_occurence': '2021-04-24 23:22:56'
     }
-
-    an exception of type ValueError will be trown, if the toilet_event does not adhere to
-    this.
     """
         
     try:
@@ -106,7 +103,7 @@ def on_message(client, userdata, msg) -> None:
         toilet_event = json.loads(msg.payload)    # json.JSONDecoderError
         insert_toilet_event_into_db(toilet_event)
     except json.JSONDecodeError as err:
-        logger.error(f"Could not parse json msg.payload.")
+        logger.error(f"Could not parse json msg.payload. {err.msg}")
 
 
 if __name__ == '__main__':

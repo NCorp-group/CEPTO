@@ -1,3 +1,6 @@
+CREATE DATABASE IF NOT EXISTS 'lightguide_dev';
+USE 'lightguide_dev';
+
 DROP TABLE IF EXISTS 'users';
 
 CREATE TABLE `users` (
