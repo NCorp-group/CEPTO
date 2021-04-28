@@ -9,7 +9,7 @@ set -e
 
 update_and_install_build_requirement_packages() {
     sudo apt update
-    sudo apt install -ygit make g++ gcc
+    sudo apt install -y git make g++ gcc
 }
 
 install_and_setup_mosquitto_broker() {
@@ -44,8 +44,8 @@ install_and_setup_zigbee2mqtt() {
 }
 
 install_and_setup_mariaDB() {
-    local DB_USER="testuser"
-    local DB_PASSWD="test"
+    local DB_USER="testuser_dummy"
+    local DB_PASSWD="test_dummy"
     local CREATE_USER_QUERY="CREATE USER '${DB_USER}'@localhost IDENTIFIED BY '${DB_PASSWD}';"
 
     sudo apt install -y mariadb-server
@@ -54,6 +54,8 @@ install_and_setup_mariaDB() {
     sudo systemctl start mariadb.service
     mysql -u "root" -p "root" -e "source setup/create_tables.sql"
 }
+
+echo -e "starting setup script...\n"
 
 update_and_install_build_requirement_packages
 install_nodejs
