@@ -7,6 +7,8 @@ import paho.mqtt.client as mqtt
 from dotenv import dotenv_values
 from loguru import logger
 
+from heucod_event import HEUCODobject, LightGuideEvent
+
 # import pprint
 # pp = pprint.PrettyPrinter(indent=4)
 
@@ -34,6 +36,7 @@ EVENTS = [
     'notification'
     'leaving_path' # OPTIONAL if we have time
 ]
+
 
 
 @logger.catch

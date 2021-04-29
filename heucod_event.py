@@ -35,23 +35,33 @@ def test_pascal_to_snake_case() -> None:
         'notification'
     ]
     pascal_case = [ variant.name for variant in LightGuideEvent ]
-    assert [ s == p for (s, p) in zip(snake_case, pascal_case) ]
+    assert [ s == pascal_to_snake_case(p) for (s, p) in zip(snake_case, pascal_case) ]
 
 
-@dataclass(frozen=True)
-class HEUCODevent:
+# @dataclass(frozen=True)
+@dataclass()
+class HEUCODobject:
+    # The battery level in percentage (0-100). A battery alert service may use this information to
+    # send alerts at 10% or 20 % battery life - and critical alerts at 0%.
+    battery: int = None
+    # ID of the caregiver - e.g. one helping with a rehab or care task that is reported.
+    caregiver_id: int = None
     device_model: str
     device_vendor: str
+    event_type: LightGuideEvent
+    event_type_id: int
+
+    # The ID of a gatway who is either relaying the event from a sensor or if the event is generated
+    # by the gateway itself.
+    gateway_id: str = None
     # The length of the event period - in milliseconds. for example, if a PIR sensor has detected
     # movement and it covers 90 seconds, it would be 90000 ms.
     length: int = field(default=None)
+    # ID of the user or patient to whom this event belongs.
+    patient_id: str = None
     # For how long is the sensor blind, in seconds. forexample, a PIR sensor will detect movement
     # and then send it. After this, it will be "blind" typically between 10 and 120 seconds. This is
     # important for the classification services.
     sensor_blind_duration: int = None
-    # ID of the user or patient to whom this event belongs.
-    patient_id: str = None
-    # ID of the caregiver - e.g. one helping with a rehab or care task that is reported.
-    caregiver_id: int = None
 
 

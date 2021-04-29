@@ -1,0 +1,4 @@
+raspberry_pi_gateways:
+  hosts:
+    pi-1:
+      ansible_host: 192.168.0.176

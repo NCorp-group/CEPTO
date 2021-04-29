@@ -1,0 +1,17 @@
+---
+
+- name: comment
+  hosts: raspberry_pi_gateways
+  remote_user: pi
+
+
+  tasks:
+    - name: install mariaDB
+      apt:
+        name: mariadb-server
+        state: latest
+    - name: start mariaDB service
+      service:
+        name: mariadb
+        state: started
+        enabled: yes
