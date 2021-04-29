@@ -1,8 +1,7 @@
 [
     {
         "pir" : "pir_FNAME",
-        "light" : "light_FNAME",
-        "vib" : "vib_FNAME"
+        "light" : "light_FNAME"
     },
     {
         "pir" : "pir_FNAME",

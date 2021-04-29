@@ -4,9 +4,16 @@ from enum import Enum
 import time
 import json
 
+class UserState(Enum):
+    IN_BED = 1
+    TO_BATHROOM = 2
+    IN_BATHROOM = 3
+    TO_BED = 4
+
+
 class LightGuard:
     def __init__(self):
-        # Reading the devices from the 
+        # Reading the devices from devices.json
         fileObject = open("devices.json", "r")
         jsonContent = fileObject.read()
         self.zones = json.loads(jsonContent)
@@ -24,14 +31,8 @@ class LightGuard:
             self.turn_light_off(self.zones[i]['led'])
             self.LED_state.append(False)
 
-        # Starting routine
-        self.subscriber_thread = Thread(target=self.start, daemon=True)
-        # Thread callback away from main process
-        self.subscriber_thread.start()
-        # This is the main logic
-#        logic()
 
-    def start(self):
+        # Subscribing to all PIR sensors
         sub = mqtt.Client()
         sub.connect(self.mqtt_server_ip, self.mqtt_server_port)
         for i in len(self.zones):
@@ -39,7 +40,9 @@ class LightGuard:
         sub.subscribe(f"zigbee2mqtt/{self.zones[0]['vib']}", 1)
         sub.on_message = self.on_message
         print("Waiting for events")
-        sub.loop_forever()
+        sub.loop_start()
+
+        self.logic()
 
     def on_message(self, client, userdata, msg):
         dictionary = json.loads(msg.payload)    # The message itself
@@ -49,14 +52,36 @@ class LightGuard:
                 if(msg.topic == f"zigbee2mqtt/{self.zones[i]['pir']}"):
                     self.PIR_occupancy[i] = dictionary["occupancy"]
         
-#    def logic():
 
+    # Assumptions: 1. Person starts in bed 2. Has to walk all the way to bed/bathroom 3. Minimum 2 zones
+    def logic(self):
+        state = UserState.IN_BED
+        while(True):
+            if(state == UserState.IN_BED):
+                # Check if the first PIR sensor reports occupancy TRUE
+                if(self.pir_occupancy[0] == True):
+                    self.turn_light_on(self.zones[0]['led'])
+                    self.turn_light_on(self.zones[1]['led'])
+                    state = UserState.TO_BATHROOM
+                    # TODO Send event
+                    # self.event_leaving_bed():
+
+            if(state == UserState.TO_BATHROOM):
+                for i in len(self.zones):
+                    if(self.pir_occupancy[len(self.zones)-i] == True):
+                        self.turn_light_on(self.zones[len(self.zones)-i+1]['led'])
+                        
+
+
+
+
+# Event functions:
 #    def event_leaving_bed():
 #    def event_arriving_at_toilet():
 #    def event_leaving_toilet():
 #    def event_arriving_at_bed():
 #    def event_notification():
-    #OPTIONAL: def event_leaving_path():
+#    def event_leaving_path(): - optional
 
     
     def turn_light_off(self, PIR_fname):

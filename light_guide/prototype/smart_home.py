@@ -6,9 +6,9 @@ class SmartHome:
     def __init__(self):
         self.mqtt_server_ip = "192.168.0.127"
         self.mqtt_server_port = 1883
-        self.pir1_occupancy = bool
-        self.pir2_occupancy = bool
-        self.light_state = bool
+        self.pir1_occupancy : bool
+        self.pir2_occupancy : bool
+        self.light_state : bool
 
         # Turning light strip OFF
         pub = mqtt.Client()
