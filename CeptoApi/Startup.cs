@@ -40,14 +40,9 @@ namespace CeptoApi
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "CeptoApi", Version = "v1" });
             });
-            services.AddCors(options => 
-            {
-                options.AddPolicy(name: MyAllowSpecificOrigins,
-                                  builder => 
-                                  {
-                                      builder.WithOrigins("https://localhost");
-                                  });
-            });
+            services.AddCors(options => options.AddPolicy("AllowAll", p => p.AllowAnyOrigin()
+                                                             .AllowAnyMethod()
+                                                              .AllowAnyHeader()));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -64,7 +59,7 @@ namespace CeptoApi
 
             app.UseRouting();
 
-            app.UseCors(MyAllowSpecificOrigins);
+            app.UseCors("AllowAll");
 
             app.UseAuthorization();
 
