@@ -214,3 +214,36 @@ graph TD;
     mqtt --- logic;
     logic --- server;
 ````
+
+# Implementation Docs
+Web client-server authentication:
+```
+title Web Client Authentication
+
+participant "Web Client" as client
+participant "Web API" as api
+participant "DB Interface Service" as i
+database "MariaDB" as db
+
+activate client #cccccc
+client -> api: ""AuthenticateRequest {\n    user: String,\n    pwd:  String,\n}""
+activate api #cccccc
+api -> i: ""getUser (user, hash)""
+activate i #cccccc
+i -> db: ""SELECT ...""
+activate db #cccccc
+db --> i: non-empty
+deactivate db
+i --> api: ""User, [Patients]""
+deactivate i
+api -> i: ""addSession(session)""
+activate i #cccccc
+i -> db: ""INSERT ...""
+activate db #cccccc
+db --> i: ack
+deactivate db
+i --> api: ack
+deactivate i
+api --> client: ""AuthenticateReply {\n    cmd_echo:      String,\n    error_code:    String,\n    session_token: Guid,\n    expiry:        DateTime,\n}""
+deactivate api
+```
