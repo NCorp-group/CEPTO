@@ -1,7 +1,7 @@
-CREATE DATABASE IF NOT EXISTS 'lightguide_dev';
-USE 'lightguide_dev';
+CREATE DATABASE IF NOT EXISTS lightguide_dev;
+USE lightguide_dev;
 
-DROP TABLE IF EXISTS 'users';
+DROP TABLE IF EXISTS users;
 
 CREATE TABLE `users` (
   `user_id` int PRIMARY KEY AUTO_INCREMENT,
@@ -9,7 +9,7 @@ CREATE TABLE `users` (
   `date_of_birth` date
 );
 
-DROP TABLE IF EXISTS 'events';
+DROP TABLE IF EXISTS events;
 
 CREATE TABLE `events` (
   `event_id` int PRIMARY KEY AUTO_INCREMENT,
