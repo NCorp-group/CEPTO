@@ -1,0 +1,33 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
+
+using CeptoApi.Models;
+
+namespace CeptoApi.Controllers
+{
+    [ApiController]
+    [Route("[controller]")]
+    public class FetchEventsController : ControllerBase
+    {
+
+        private readonly ILogger<FetchEventsController> _logger;
+
+        public FetchEventsController(ILogger<FetchEventsController> logger)
+        {
+            _logger = logger;
+        }
+
+        [HttpGet]
+        public FetchEventsReply Get()
+        {
+            return new FetchEventsReply
+            {
+                test = "test"
+            };
+        }
+    }
+}
