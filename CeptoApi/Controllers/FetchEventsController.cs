@@ -53,12 +53,6 @@ namespace CeptoApi.Controllers
                 cmd_echo = cmdEcho,
                 error_code = "ok",
                 events = new List<EventSchema> {sample_event, sample_event}
-                    /* new EventSchema {
-                        visit_id = Guid.NewGuid(),
-                        event_type = "swag",
-                        time = DateTime.Now,
-                        time_since_last = TimeSpan.Zero
-                    }*/
             };
         }
     }
