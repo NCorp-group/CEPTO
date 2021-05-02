@@ -1,22 +1,22 @@
 [
     {
-        "pir" : "pir_FNAME",
-        "light" : "light_FNAME"
+        "pir" : "pir1",
+        "light" : "led1"
     },
     {
-        "pir" : "pir_FNAME",
-        "light" : "light_FNAME"
+        "pir" : "pir2",
+        "light" : "led2"
     },
     {
-        "pir" : "pir_FNAME",
-        "light" : "light_FNAME"
+        "pir" : "pir3",
+        "light" : "led3"
     },
     {
-        "pir" : "pir_FNAME",
-        "light" : "light_FNAME"
+        "pir" : "pir4",
+        "light" : "led4"
     },
     {
-        "pir" : "pir_FNAME",
-        "light" : "light_FNAME"
+        "pir" : "pir5",
+        "light" : "led5"
     }
 ]

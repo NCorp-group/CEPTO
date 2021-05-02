@@ -1,0 +1,31 @@
+homeassistant: false
+permit_join: true
+frontend:
+  port: 8080
+  host: 0.0.0.0
+mqtt:
+  base_topic: zigbee2mqtt
+  server: 'mqtt://localhost'
+serial:
+  port: /dev/ttyACM0
+devices:
+  '0x60a423fffe02310d':
+    friendly_name: led3
+  '0xbc33acfffe8b8dab':
+    friendly_name: led1
+  '0x00158d00057b28ef':
+    friendly_name: pir4
+  '0x00158d00057b2dce':
+    friendly_name: pir5
+  '0x60a423fffe023108':
+    friendly_name: led2
+  '0x00158d00057acbe7':
+    friendly_name: pir1
+  '0x00158d0005729f17':
+    friendly_name: pir2
+  '0x00158d00057b4d2a':
+    friendly_name: pir3
+  '0xbc33acfffe8b8d50':
+    friendly_name: led4
+  '0x60a423fffe023458':
+    friendly_name: led5
