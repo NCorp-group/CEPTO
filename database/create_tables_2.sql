@@ -13,7 +13,7 @@ CREATE TABLE event_types (
 );
 
 CREATE TABLE patients (
-  patient_id varchar(255) UNIQUE PRIMARY KEY NOT NULL
+  patient_id varchar(255)PRIMARY KEY
 );
 
 CREATE TABLE sensors (
@@ -25,7 +25,7 @@ CREATE TABLE sensors (
 );
 
 CREATE TABLE gateways (
-  gateway_id varchar(255) UNIQUE PRIMARY KEY NOT NULL
+  gateway_id varchar(255) PRIMARY KEY
 );
 
 ALTER TABLE events ADD FOREIGN KEY (event_type_id) REFERENCES event_types (id);
