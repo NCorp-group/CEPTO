@@ -13,12 +13,13 @@ class UserState(Enum):
 
 class LightGuard:
     def __init__(self):
-        # Reading the devices from devices.json
-        fileObject = open("light_guide/prototype/devices.json", "r")
+        # Reading the information from config.json
+        fileObject = open("light_guide/prototype/config.json", "r")
         jsonContent = fileObject.read()
-        self.zones = json.loads(jsonContent)
+        self.room_info = json.loads(jsonContent)["room_info"]
+        self.zones = json.loads(jsonContent)["zones"]
 
-        self.mqtt_server_ip = "10.9.2.86"
+        self.mqtt_server_ip = "10.9.2.122"
         self.mqtt_server_port = 1883
 
         # The model
@@ -46,7 +47,7 @@ class LightGuard:
 
     def on_message(self, client, userdata, msg):
         dictionary = json.loads(msg.payload)    # The message itself
-        print("Occupancy", dictionary["occupancy"] ,"recieved from", msg.topic.split("/")[1])
+        print(msg.topic.split("/")[1], "->", dictionary["occupancy"])
         if("pir" in msg.topic):
             for i in range(0, len(self.zones)):
                 if(msg.topic == f"zigbee2mqtt/{self.zones[i]['pir']}"):
@@ -62,15 +63,15 @@ class LightGuard:
                     self.turn_light_on(self.zones[0]['led'])
                     self.turn_light_on(self.zones[1]['led'])
                     self.state = UserState.TO_BATHROOM
-                    # TODO Send event
-                    # self.event_leaving_bed():
+                    self.event("left_bed")
 
             if(self.state == UserState.TO_BATHROOM):
                 # If the last PIR sensor is occupied, change state to in bathroom
                 if(self.pir_occupancy[len(self.zones)-1] == True):
                     self.state = UserState.IN_BATHROOM
-                    print("Timeout for toilet visit - 95 seconds")
-                    time.sleep(95)
+                    self.event("arrived_at_toilet")
+                    print("Timeout for toilet visit for 75 seconds")
+                    time.sleep(75)
                     print("Ready to go back to bed")
                 # If any of other zone is oocupied, checked from bathroom to the bed
                 else:
@@ -79,6 +80,7 @@ class LightGuard:
                             self.turn_light_on(self.zones[i+1]['led'])
                             for j in range(0, i):
                                 self.turn_light_off(self.zones[j]['led'])
+                            break
 
             if(self.state == UserState.IN_BATHROOM):
                 if(self.pir_occupancy[len(self.zones)-2] == True):
@@ -86,18 +88,22 @@ class LightGuard:
                     self.turn_light_off(self.zones[len(self.zones)-1]["led"])
                     self.turn_light_on(self.zones[len(self.zones)-3]["led"])
                     self.state = UserState.TO_BED
-                    print("TO BED")
+                    self.event("left_toilet")
+                    
 
             if(self.state == UserState.TO_BED):
                 # If bed pir sensor is occupant, change state to in bed
                 if(self.pir_occupancy[0] == True):
                     self.state = UserState.IN_BED
-                    print("IN BED")
-                    print("Turning off all lights in 10 seconds")
+                    self.event("arrived_at_bed")
                     self.turn_light_off(self.zones[1]['led'])
+                    print("Turning off all lights in 10 seconds")
                     time.sleep(10)
                     for i in range(0, len(self.zones)):
                         self.turn_light_off(self.zones[i]['led'])
+                    print("Program state resetting in 75 seconds")
+                    time.sleep(75)
+                    print("Program state reset complete")
                 else:
                     for i in range(0, len(self.zones)-2):
                         if(self.pir_occupancy[i] == True):
@@ -105,20 +111,31 @@ class LightGuard:
                             for j in range(i+1, len(self.zones)):
                                 self.turn_light_off(self.zones[j]['led'])
               
-
 # Event functions:
-#    def event_leaving_bed():
+    def event(self, event):
+        print("Sending event:", event)
+        pub = mqtt.Client()
+        pub.connect(self.mqtt_server_ip, self.mqtt_server_port)
+        message = {
+            "event_type": event,
+            "timestamp": time.time(),
+            "patient_id": self.room_info["patient_id"],
+            "gateway_id": self.room_info["gateway_id"]
+        }
+        pub.publish("light_guide/events/add", json.dumps(message), 1)
+        #pub.publish("zigbee2mqtt/light_strip/set", message, 1)
+        pub.disconnect()
+
 #    def event_arriving_at_toilet():
 #    def event_leaving_toilet():
 #    def event_arriving_at_bed():
 #    def event_notification():
 #    def event_leaving_path(): - optional
-
     
     def turn_light_off(self, led_fname):
         for i in range(0, len(self.zones)):
             if(led_fname == self.zones[i]['led'] and self.led_state[i] == True):
-                print("Turning light off")
+                print("Turning", led_fname, "off")
                 pub = mqtt.Client()
                 pub.connect(self.mqtt_server_ip, self.mqtt_server_port)
                 message = '{"state":"OFF"}'

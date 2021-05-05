@@ -1,0 +1,28 @@
+{
+    "room_info" : {
+        "gateway_id" : "1",
+        "patient_id" : "1"
+    },
+    "zones" : [
+        {
+            "pir" : "pir1",
+            "led" : "led1"
+        },
+        {
+            "pir" : "pir2",
+            "led" : "led2"
+        },
+        {
+            "pir" : "pir3",
+            "led" : "led3"
+        },
+        {
+            "pir" : "pir4",
+            "led" : "led4"
+        },
+        {
+            "pir" : "pir5",
+            "led" : "led5"
+        }
+    ]
+}
