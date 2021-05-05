@@ -13,7 +13,7 @@ CREATE TABLE event_types (
 );
 
 CREATE TABLE patients (
-  patient_id varchar(255)PRIMARY KEY
+  patient_id varchar(255) PRIMARY KEY
 );
 
 CREATE TABLE sensors (
@@ -30,8 +30,8 @@ CREATE TABLE gateways (
 
 ALTER TABLE events ADD FOREIGN KEY (event_type_id) REFERENCES event_types (id);
 
-ALTER TABLE patients ADD FOREIGN KEY (patient_id) REFERENCES events (patient_id);
+ALTER TABLE events ADD FOREIGN KEY (patient_id) REFERENCES patients (patient_id);
 
-ALTER TABLE gateways ADD FOREIGN KEY (gateway_id) REFERENCES events (gateway_id);
+ALTER TABLE events ADD FOREIGN KEY (gateway_id) REFERENCES gateways (gateway_id);
 
 ALTER TABLE sensors ADD FOREIGN KEY (gateway_id) REFERENCES gateways (gateway_id);
