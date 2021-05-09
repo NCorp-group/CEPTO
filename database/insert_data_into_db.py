@@ -1,6 +1,7 @@
 import json
 import sys
 from typing import Dict, Any
+import time
 
 from mysql.connector import connect, Error as MysqlError
 import paho.mqtt.client as mqtt
@@ -69,7 +70,7 @@ def insert_toilet_event_into_db(toilet_event: Dict[str, Any]) -> None:
                     INSERT INTO events(timestamp, event_type_id, patient_id, gateway_id)
                     VALUES(
                         {toilet_event['timestamp']},
-                        (SELECT event_type_id FROM event_types WHERE event_type = '{toilet_event['event_type']}')
+                        (SELECT id FROM event_types WHERE event_type = '{toilet_event['event_type']}')
                         {toilet_event['patient_id']},
                         {toilet_event['gateway_id']}
                     );
@@ -105,6 +106,8 @@ def on_message(client, userdata, msg) -> None:
 
     try:
         toilet_event = json.loads(msg.payload)    # json.JSONDecoderError
+        if toilet_event.get('timestamp') is None:
+            toilet_event['timestamp'] = int(time.time())
         insert_toilet_event_into_db(toilet_event)
     except json.JSONDecodeError as err:
         logger.error(f"Could not parse json msg.payload. {err.msg}")

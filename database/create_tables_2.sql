@@ -28,6 +28,7 @@ CREATE TABLE gateways (
   gateway_id varchar(255) PRIMARY KEY
 );
 
+
 ALTER TABLE events ADD FOREIGN KEY (event_type_id) REFERENCES event_types (id);
 
 ALTER TABLE events ADD FOREIGN KEY (patient_id) REFERENCES patients (patient_id);
@@ -35,3 +36,12 @@ ALTER TABLE events ADD FOREIGN KEY (patient_id) REFERENCES patients (patient_id)
 ALTER TABLE events ADD FOREIGN KEY (gateway_id) REFERENCES gateways (gateway_id);
 
 ALTER TABLE sensors ADD FOREIGN KEY (gateway_id) REFERENCES gateways (gateway_id);
+
+
+INSERT INTO event_types(event_type) VALUES
+    ('arriving_at_bed'),
+    ('arriving_at_toilet'),
+    ('leaving_bed'),
+    ('leaving_path'),
+    ('leaving_toilet'),
+    ('notification');
