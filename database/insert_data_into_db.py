@@ -68,10 +68,10 @@ def insert_toilet_event_into_db(toilet_event: Dict[str, Any]) -> None:
                     insert_event_query = f"""
                     INSERT INTO events(timestamp, event_type_id, patient_id, gateway_id)
                     VALUES(
-                        '{toilet_event['timestamp']}',
+                        {toilet_event['timestamp']},
                         (SELECT event_type_id FROM event_types WHERE event_type = '{toilet_event['event_type']}')
-                        '{toilet_event['patient_id']}',
-                        '{toilet_event['gateway_id']}'
+                        {toilet_event['patient_id']},
+                        {toilet_event['gateway_id']}
                     );
                     """
                 except KeyError as e:
