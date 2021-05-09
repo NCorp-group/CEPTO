@@ -68,9 +68,9 @@ def insert_toilet_event_into_db(toilet_event: Dict[str, Any]) -> None:
             with conn.cursor() as cursor:
                 try:
                     insert_event_query = f"""
-                    INSERT INTO events(timestamp, event_type_id, patient_id, gateway_id)
+                    INSERT INTO events(ts, event_type_id, patient_id, gateway_id)
                     VALUES(
-                        {toilet_event['timestamp']},
+                        '{toilet_event['timestamp']}',
                         (SELECT id FROM event_types WHERE event_type = '{toilet_event['event_type']}'),
                         '{toilet_event['patient_id']}',
                         '{toilet_event['gateway_id']}'
@@ -79,6 +79,8 @@ def insert_toilet_event_into_db(toilet_event: Dict[str, Any]) -> None:
                 except KeyError as e:
                     logger.error(f'could not find key: {e} in object toilet_event')
                     return
+
+                print(insert_event_query)
 
                 cursor.execute(insert_event_query)
                 conn.commit()
@@ -108,7 +110,7 @@ def on_message(client, userdata, msg) -> None:
     try:
         toilet_event = json.loads(msg.payload)    # json.JSONDecoderError
         if toilet_event.get('timestamp') is None:
-            toilet_event['timestamp'] = datetime.datetime.now().strftime("%Y%m%d %H:%M:%S")
+            toilet_event['timestamp'] = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
         insert_toilet_event_into_db(toilet_event)
     except json.JSONDecodeError as err:
         logger.error(f"Could not parse json msg.payload. {err.msg}")
