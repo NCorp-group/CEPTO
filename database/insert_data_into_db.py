@@ -1,8 +1,9 @@
 import json
 import sys
 from typing import Dict, Any
-import time
+import time 
 import datetime
+import hashlib
 
 from mysql.connector import connect, Error as MysqlError
 import paho.mqtt.client as mqtt
