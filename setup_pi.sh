@@ -30,7 +30,7 @@ install_and_setup_zigbee2mqtt() {
     
     # copy service file
     if [ ! -f setup/zigbee2mqtt.service ]; then 
-        cp setup/zigbee2mqtt.service /etc/systemd/system/zigbee2mqtt.service
+        sudo cp setup/zigbee2mqtt.service /etc/systemd/system/
     fi
     
     sudo git clone https://github.com/Koenkk/zigbee2mqtt.git /opt/zigbee2mqtt
@@ -47,6 +47,7 @@ install_and_setup_mariaDB() {
     local DB_USER="testuser_dummy"
     local DB_PASSWD="test_dummy"
     local CREATE_USER_QUERY="CREATE USER '${DB_USER}'@localhost IDENTIFIED BY '${DB_PASSWD}';"
+    
 
     sudo apt install -y mariadb-server
     if [ ! -f setup/create_tables.sql ]; then return -1; fi
