@@ -46,7 +46,7 @@ CREATE TABLE sensors (
     sensor_type ENUM ('pir_sensor', 'vibration_sensor') NOT NULL,
     device_model varchar(255) NOT NULL,
     device_vendor varchar(255) NOT NULL,
-    id int NOT NULL UNIQUE
+    gateway_id int NOT NULL UNIQUE
 );
 
 CREATE TABLE gateways (
