@@ -1,7 +1,7 @@
 
 CREATE TABLE events (
   id int PRIMARY KEY AUTO_INCREMENT,
-  timestamp timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  ts timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   event_type_id int NOT NULL,
   patient_id varchar(255) NOT NULL,
   gateway_id varchar(255) NOT NULL
@@ -39,9 +39,13 @@ ALTER TABLE sensors ADD FOREIGN KEY (gateway_id) REFERENCES gateways (gateway_id
 
 
 INSERT INTO event_types(event_type) VALUES
-    ('arriving_at_bed'),
-    ('arriving_at_toilet'),
-    ('leaving_bed'),
-    ('leaving_path'),
-    ('leaving_toilet'),
+    ('arrived_at_bed'),
+    ('arrived_at_toilet'),
+    ('left_bed'),
+    ('left_path'),
+    ('left_toilet'),
     ('notification');
+
+INSERT INTO patients(patient_id) VALUES('041cb23-31f4-4b27-a20b-d160564e2e68');
+
+INSERT INTO gateways(gateway_id) VALUES('1fb3b683-7fd5-4581-b201-30ac171e5414');
