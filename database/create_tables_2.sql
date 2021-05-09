@@ -46,21 +46,22 @@ CREATE TABLE sensors (
     sensor_type ENUM ('pir_sensor', 'vibration_sensor') NOT NULL,
     device_model varchar(255) NOT NULL,
     device_vendor varchar(255) NOT NULL,
-    gateway_id varchar(255) NOT NULL
+    id int NOT NULL UNIQUE
 );
 
 CREATE TABLE gateways (
-    gateway_id varchar(255) PRIMARY KEY
+    id int PRIMARY KEY AUTO_INCREMENT,
+    gateway_id varchar(255) NOT NULL UNIQUE
 );
 
 
 ALTER TABLE events ADD FOREIGN KEY (event_type_id) REFERENCES event_types (id);
 
-ALTER TABLE events ADD FOREIGN KEY (patient_id) REFERENCES patients (patient_id);
+ALTER TABLE events ADD FOREIGN KEY (patient_id) REFERENCES patients (id);
 
-ALTER TABLE events ADD FOREIGN KEY (gateway_id) REFERENCES gateways (gateway_id);
+ALTER TABLE events ADD FOREIGN KEY (gateway_id) REFERENCES gateways (id);
 
-ALTER TABLE sensors ADD FOREIGN KEY (gateway_id) REFERENCES gateways (gateway_id);
+ALTER TABLE sensors ADD FOREIGN KEY (gateway_id) REFERENCES gateways (id);
 
 
 INSERT INTO event_types(event_type) VALUES
