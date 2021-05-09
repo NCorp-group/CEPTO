@@ -7,8 +7,10 @@ CREATE TABLE events (
     id int PRIMARY KEY AUTO_INCREMENT,
     timestamp timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT 'Format is YYYY-MM-DD HH:MM:SS',
     event_type_id int NOT NULL,
-    patient_id varchar(255) NOT NULL,
-    gateway_id varchar(255) NOT NULL
+    -- patient_id varchar(255) NOT NULL,
+    -- gateway_id varchar(255) NOT NULL
+    patient_id int NOT NULL,
+    gateway_id int NOT NULL
 );
 
 CREATE TABLE event_types (

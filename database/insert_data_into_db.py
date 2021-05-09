@@ -72,10 +72,12 @@ def insert_toilet_event_into_db(toilet_event: Dict[str, Any]) -> None:
                     VALUES(
                         '{toilet_event['timestamp']}',
                         (SELECT id FROM event_types WHERE event_type = '{toilet_event['event_type']}'),
-                        '{toilet_event['patient_id']}',
-                        '{toilet_event['gateway_id']}'
+                        (SELECT id FROM patients WHERE patient_id = '{toilet_event['patient_id']}'),
+                        (SELECT id FROM gateways WHERE gateway_id = '{toilet_event['gateway_id']}')
                     );
                     """
+                        # '{toilet_event['patient_id']}',
+                        # '{toilet_event['gateway_id']}'
                 except KeyError as e:
                     logger.error(f'could not find key: {e} in object toilet_event')
                     return
