@@ -68,7 +68,7 @@ def insert_toilet_event_into_db(toilet_event: Dict[str, Any]) -> None:
             with conn.cursor() as cursor:
                 try:
                     insert_event_query = f"""
-                    INSERT INTO events(ts, event_type_id, patient_id, gateway_id)
+                    INSERT INTO events(timestamp, event_type_id, patient_id, gateway_id)
                     VALUES(
                         '{toilet_event['timestamp']}',
                         (SELECT id FROM event_types WHERE event_type = '{toilet_event['event_type']}'),
