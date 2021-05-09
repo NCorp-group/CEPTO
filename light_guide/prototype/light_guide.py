@@ -118,7 +118,7 @@ class LightGuard:
         pub.connect(self.mqtt_server_ip, self.mqtt_server_port)
         message = {
             "event_type": event,
-            "timestamp": time.time(),
+            "timestamp": int(time.time()),
             "patient_id": self.room_info["patient_id"],
             "gateway_id": self.room_info["gateway_id"]
         }
