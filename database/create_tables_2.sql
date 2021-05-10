@@ -8,7 +8,8 @@ CREATE TABLE events (
     timestamp timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT 'Format is YYYY-MM-DD HH:MM:SS',
     event_type_id int NOT NULL,
     patient_id int NOT NULL,
-    gateway_id int NOT NULL
+    gateway_id int NOT NULL,
+    visit_id int NOT NULL COMMENT 'Represent a full toilet visit. Incremented every time left_bed occurs'
 );
 
 CREATE TABLE event_types (
