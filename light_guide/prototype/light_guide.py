@@ -19,7 +19,7 @@ class LightGuard:
         self.room_info = json.loads(jsonContent)["room_info"]
         self.zones = json.loads(jsonContent)["zones"]
 
-        self.mqtt_server_ip = "10.9.2.122"
+        self.mqtt_server_ip = "192.168.0.124"
         self.mqtt_server_port = 1883
 
         # The model
@@ -146,7 +146,7 @@ class LightGuard:
     def turn_light_on(self, led_fname):
         for i in range(0, len(self.zones)):
             if(led_fname == self.zones[i]['led'] and self.led_state[i] == False):
-                print("Turning light on")
+                print("Turning", led_fname, "on")
                 pub = mqtt.Client()
                 pub.connect(self.mqtt_server_ip, self.mqtt_server_port)
                 message = {
