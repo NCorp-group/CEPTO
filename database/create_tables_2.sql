@@ -7,8 +7,6 @@ CREATE TABLE events (
     id int PRIMARY KEY AUTO_INCREMENT,
     timestamp timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT 'Format is YYYY-MM-DD HH:MM:SS',
     event_type_id int NOT NULL,
-    -- patient_id varchar(255) NOT NULL,
-    -- gateway_id varchar(255) NOT NULL
     patient_id int NOT NULL,
     gateway_id int NOT NULL
 );
@@ -54,6 +52,11 @@ CREATE TABLE gateways (
     gateway_id varchar(255) NOT NULL UNIQUE
 );
 
+CREATE TABLE number_of_visits (
+    count int NOT NULL
+);
+
+INSERT INTO number_of_visits(count) VALUES(0);
 
 ALTER TABLE events ADD FOREIGN KEY (event_type_id) REFERENCES event_types (id);
 
@@ -72,7 +75,7 @@ INSERT INTO event_types(event_type) VALUES
     ('left_toilet'),
     ('notification');
 
-INSERT INTO patients(patient_id, full_name) VALUES('041cb23-31f4-4b27-a20b-d160564e2e68', 'test_patient');
+INSERT INTO patients(patient_id, full_name) VALUES('041cb23-31f4-4b27-a20b-d160564e2e687', 'test_patient');
 
 INSERT INTO caregivers(caregiver_id, username, login_credential_hash) VALUES('fef16dcd-87d2-4f2d-a92e-7af18dd605a7', 'caregiver', '3f27b5bf43f45bc9142d9057b78869637f62d8b7ea705403411302c2a6970edb');
 
