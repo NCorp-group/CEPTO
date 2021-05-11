@@ -125,12 +125,6 @@ class LightGuard:
         pub.publish("light_guide/events/add", json.dumps(message), 1)
         #pub.publish("zigbee2mqtt/light_strip/set", message, 1)
         pub.disconnect()
-
-#    def event_arriving_at_toilet():
-#    def event_leaving_toilet():
-#    def event_arriving_at_bed():
-#    def event_notification():
-#    def event_leaving_path(): - optional
     
     def turn_light_off(self, led_fname):
         for i in range(0, len(self.zones)):
