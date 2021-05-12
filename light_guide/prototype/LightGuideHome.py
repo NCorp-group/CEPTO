@@ -28,12 +28,11 @@ class LightGuard:
         self.pir_occupancy = []
         self.led_state = []
 
+        # For each zone in config.json, turn the light strip off and initialize the arrays for led's and pir sensors
         for i in range(0, len(self.zones)):
             self.pir_occupancy.append(False)
             self.led_state.append(True)
             self.turn_light_off(self.zones[i]['led'])
-
-
 
         # Subscribing to all PIR sensors
         sub = mqtt.Client()
@@ -55,7 +54,10 @@ class LightGuard:
                     self.pir_occupancy[i] = dictionary["occupancy"]
         
 
-    # Assumptions: 1. Person starts in bed 2. Has to walk all the way to bed/bathroom 3. Minimum 3 zones
+    # Assumptions: 
+    # 1. Person starts in bed
+    # 2. Has to walk all the way to and from bathroom thorugh the zones
+    # 3. There are at least 3 zones in the system
     def logic(self):
         while(True):
             if(self.state == UserState.IN_BED):
@@ -85,12 +87,10 @@ class LightGuard:
 
             if(self.state == UserState.IN_BATHROOM):
                 if(self.pir_occupancy[len(self.zones)-2] == True):
-
                     self.turn_light_off(self.zones[len(self.zones)-1]["led"])
                     self.turn_light_on(self.zones[len(self.zones)-3]["led"])
                     self.state = UserState.TO_BED
                     self.event("left_bathroom")
-                    
 
             if(self.state == UserState.TO_BED):
                 # If bed pir sensor is occupant, change state to in bed
@@ -124,7 +124,6 @@ class LightGuard:
             "gateway_id": self.room_info["gateway_id"]
         }
         pub.publish("light_guide/events/add", json.dumps(message), 1)
-        #pub.publish("zigbee2mqtt/light_strip/set", message, 1)
         pub.disconnect()
     
     def turn_light_off(self, led_fname):
@@ -150,7 +149,6 @@ class LightGuard:
                 #message = '{"state":"ON"}'
                 pub.publish(f"zigbee2mqtt/{led_fname}/set", json.dumps(message), 1)
                 self.led_state[i] = True
-                #pub.publish("zigbee2mqtt/light_strip/set", message, 1)
                 pub.disconnect()
 
 guard = LightGuard()
