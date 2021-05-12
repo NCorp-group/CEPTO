@@ -1,6 +1,7 @@
 import paho.mqtt.client as mqtt
 from threading import Thread
 from enum import Enum
+import datetime
 import time
 import json
 
@@ -118,7 +119,7 @@ class LightGuard:
         pub.connect(self.mqtt_server_ip, self.mqtt_server_port)
         message = {
             "event_type": event,
-            "timestamp": int(time.time()),
+            "timestamp": datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
             "patient_id": self.room_info["patient_id"],
             "gateway_id": self.room_info["gateway_id"]
         }
