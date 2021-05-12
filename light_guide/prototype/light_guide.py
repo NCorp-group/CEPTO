@@ -70,8 +70,8 @@ class LightGuard:
                 # If the last PIR sensor is occupied, change state to in bathroom
                 if(self.pir_occupancy[len(self.zones)-1] == True):
                     self.state = UserState.IN_BATHROOM
-                    self.event("arrived_at_toilet")
-                    print("Timeout for toilet visit for 75 seconds")
+                    self.event("arrived_at_bathroom")
+                    print("Timeout for bathroom visit for 75 seconds")
                     time.sleep(75)
                     print("Ready to go back to bed")
                 # If any of other zone is oocupied, checked from bathroom to the bed
@@ -89,7 +89,7 @@ class LightGuard:
                     self.turn_light_off(self.zones[len(self.zones)-1]["led"])
                     self.turn_light_on(self.zones[len(self.zones)-3]["led"])
                     self.state = UserState.TO_BED
-                    self.event("left_toilet")
+                    self.event("left_bathroom")
                     
 
             if(self.state == UserState.TO_BED):
