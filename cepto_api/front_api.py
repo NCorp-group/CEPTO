@@ -39,9 +39,9 @@ class FrontApi:
         @self.app.route('/fetch-events/<usr>,<pwd>', methods=['GET'])
         def fetch_events(usr: str, pwd: str):
 
-            usr = usr.encode(encoding='ASCII')
-            pwd = pwd.encode(encoding='ASCII')
-            user_hash = hashlib.sha256(usr + pwd).hexdigest()
+            usr_bytes = usr.encode(encoding='ASCII')
+            pwd_bytes = pwd.encode(encoding='ASCII')
+            user_hash = hashlib.sha256(usr_bytes + pwd_bytes).hexdigest()
             authorized = False
             active_caregiver_id = None
 
@@ -56,44 +56,32 @@ class FrontApi:
                 }
 
                 with connect(**opts) as conn, conn.cursor(buffered=True) as cursor:
-                    fetch_caregivers_query = """
-                    SELECT *
-                    FROM caregivers;
-                    """
-
-                    cursor.execute(fetch_caregivers_query)
-                    result = cursor.fetchall()
-
-
-                    for caregiver in result:
-                        if caregiver[2] == usr and caregiver[3] == user_hash:
-                            return jsonify(f"{user_hash} == {caregiver[3]}")
-                            authorized = True
-                            active_caregiver_id = caregiver[1]
-                            break
-
-                    if not authorized:
-                        raise ValueError()
 
                     fetch_events_query = f"""
                     SELECT  events.timestamp, events.event_type_id, 
                             events.patient_id, patients.full_name
                     FROM events
                     INNER JOIN patients
-                    ON events.patient_id=patients.patient_id;
-                    WHERE events.patient_id IN (
+                    ON events.patient_id = patients.patient_id
+                    WHERE patients.id IN (
                         SELECT patient_id
                         FROM caregiver_patient_relation
-                        WHERE caregiver_id = '{active_caregiver_id}'
+                        WHERE caregiver_id IN (
+                            SELECT id
+                            FROM caregivers
+                            WHERE username = '{usr}' AND login_credential_hash = '{user_hash}'
+                        )
                     );
                     """
 
                     cursor.execute(fetch_events_query)
                     result = cursor.fetchall()
 
+                    if len(result) == 0:
+                        raise ValueError()
             
             except MysqlError as err:
-                print(f"unknown fatal error when interacting with mariadb database: {err}")
+                print(f"sql error: {err}")
                 return jsonify({
                     "success":False,
                     "events":[]
