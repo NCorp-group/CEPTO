@@ -42,8 +42,6 @@ class FrontApi:
             usr_bytes = usr.encode(encoding='ASCII')
             pwd_bytes = pwd.encode(encoding='ASCII')
             user_hash = hashlib.sha256(usr_bytes + pwd_bytes).hexdigest()
-            authorized = False
-            active_caregiver_id = None
 
             #### QUERIES ####
             try:
@@ -58,19 +56,27 @@ class FrontApi:
                 with connect(**opts) as conn, conn.cursor(buffered=True) as cursor:
 
                     fetch_events_query = f"""
-                    SELECT  events.timestamp, events.event_type_id, 
-                            events.patient_id, patients.full_name
-                    FROM events
-                    INNER JOIN patients
-                    ON events.patient_id = patients.patient_id
-                    WHERE patients.id IN (
-                        SELECT patient_id
-                        FROM caregiver_patient_relation
-                        WHERE caregiver_id IN (
-                            SELECT id
-                            FROM caregivers
-                            WHERE username = '{usr}' AND login_credential_hash = '{user_hash}'
-                        )
+                    SELECT  
+                        e.timestamp,
+                        e.event_type_id, 
+                        e.patient_id,
+                        e.visit_id,
+                        p.full_name
+                    FROM
+                        events AS e
+                    INNER JOIN
+                        patients AS p
+                        ON
+                            e.patient_id = p.patient_id
+                    WHERE 
+                        p.id IN (
+                            SELECT patient_id
+                            FROM caregiver_patient_relation
+                            WHERE caregiver_id IN (
+                                SELECT id
+                                FROM caregivers
+                                WHERE username = '{usr}' AND login_credential_hash = '{user_hash}'
+                            )
                     );
                     """
 
@@ -100,14 +106,15 @@ class FrontApi:
                     "timestamp": event[0],
                     "event_type_id": event[1],
                     "patient_id": event[2],
-                    "patient_full_name": event[3]
+                    "visit_id": event[3],
+                    "patient_full_name": event[4]
                 }
                 for event in result
             ]
 
             return jsonify({
-                "success":True,
-                "events":events
+                "success": True,
+                "events": events
             })
 
         self.app.run()
