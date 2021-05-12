@@ -216,34 +216,64 @@ graph TD;
 ````
 
 # Implementation Docs
-Web client-server authentication:
+Web Client - Web Server: Fetch Events:
 ```
-title Web Client Authentication
+Web Client - Web Server: Fetch Events
 
 participant "Web Client" as client
-participant "Web API" as api
-participant "DB Interface Service" as i
+participant "Web Server : Flask Framework" as frame
+participant "Web Server : FrontApi" as api
 database "MariaDB" as db
 
+activate db #eeeeee
+activate frame #eeeeee
 activate client #cccccc
-client -> api: ""AuthenticateRequest {\n    user: String,\n    pwd:  String,\n}""
+
+alt correct syntax
+client ->> frame: ""HTTP GET /fetch_events/<usr>,<pwd>""
+activate frame #cccccc
+frame ->> api: ""fetch_events(usr, pwd)""
 activate api #cccccc
-api -> i: ""getUser (user, hash)""
-activate i #cccccc
-i -> db: ""SELECT ...""
-activate db #cccccc
-db --> i: non-empty
-deactivate db
-i --> api: ""User, [Patients]""
-deactivate i
-api -> i: ""addSession(session)""
-activate i #cccccc
-i -> db: ""INSERT ...""
-activate db #cccccc
-db --> i: ack
-deactivate db
-i --> api: ack
-deactivate i
-api --> client: ""AuthenticateReply {\n    cmd_echo:      String,\n    error_code:    String,\n    session_token: Guid,\n    expiry:        DateTime,\n}""
+note over api: API hashes ""usr"" and ""pwd"",\ndatabase query returns empty\nset if hash doesn't match.\nSee <snippet ref.>
+api -> db: SELECT ...
 deactivate api
+activate db #cccccc
+note over api, db: SELECT query selects caregiver\nthat matches credentials, patient\nthat matches caregiver, and events\n that match patient.\nSee <snippet ref.>
+db --> api: list of tuples
+activate api #cccccc
+
+alt success
+deactivate db
+api -->> frame: JSON object
+deactivate api
+frame -->> client: JSON string
+deactivate frame
+
+else empty query result
+activate api #cccccc
+api -->> frame: JSON object (""success=False"")
+activate frame #cccccc
+deactivate api
+frame -->> client: JSON string ("""success":false"")
+deactivate frame
+
+
+
+else unknown database error
+activate api #cccccc
+api -->> frame: JSON object (""success=False"")
+activate frame #cccccc
+deactivate api
+frame -->> client: JSON string ("""success":false"")
+deactivate frame
+end
+
+else incorrect syntax
+client ->> frame: non-existent command
+activate frame #cccccc
+frame -->> client: HTTP status 404 (not found)
+deactivate frame
+end
+
+
 ```
