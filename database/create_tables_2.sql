@@ -9,7 +9,7 @@ CREATE TABLE events (
     event_type_id int NOT NULL,
     patient_id int NOT NULL,
     gateway_id int NOT NULL,
-    visit_id int NOT NULL COMMENT 'Represent a full toilet visit. Incremented every time left_bed occurs'
+    visit_id int NOT NULL COMMENT 'Represent a full bathroom visit. Incremented every time left_bed occurs'
 );
 
 CREATE TABLE event_types (
@@ -54,7 +54,7 @@ CREATE TABLE gateways (
 );
 
 CREATE TABLE number_of_visits (
-    count int NOT NULL
+    count int NOT NULL COMMENT 'DO NOT MODIFY THIS TABLE, only allowed way is to call increment_visit_id()'
 );
 
 INSERT INTO number_of_visits(count) VALUES(0);
@@ -68,12 +68,20 @@ ALTER TABLE events ADD FOREIGN KEY (gateway_id) REFERENCES gateways (id);
 ALTER TABLE sensors ADD FOREIGN KEY (gateway_id) REFERENCES gateways (id);
 
 
+CREATE PROCEDURE lightguide_dev.increment_visit_id()
+MODIFIES SQL DATA
+BEGIN
+    UPDATE number_of_visits
+        SET count = count + 1;
+END;
+
+
 INSERT INTO event_types(event_type) VALUES
     ('arrived_at_bed'),
-    ('arrived_at_toilet'),
+    ('arrived_at_bathroom'),
     ('left_bed'),
     ('left_path'),
-    ('left_toilet'),
+    ('left_bathroom'),
     ('notification');
 
 INSERT INTO patients(patient_id, full_name) VALUES('041cb23-31f4-4b27-a20b-d160564e2e687', 'test_patient');
