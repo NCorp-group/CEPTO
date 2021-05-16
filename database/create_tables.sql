@@ -45,7 +45,7 @@ CREATE TABLE sensors (
     sensor_type ENUM ('pir_sensor', 'vibration_sensor') NOT NULL,
     device_model varchar(255) NOT NULL,
     device_vendor varchar(255) NOT NULL,
-    gateway_id int NOT NULL UNIQUE
+    gateway_id int NOT NULL
 );
 
 CREATE TABLE gateways (
@@ -91,3 +91,12 @@ INSERT INTO caregivers(HEUCOD_caregiver_id, username, login_credential_hash) VAL
 INSERT INTO gateways(HEUCOD_gateway_id) VALUES('1fb3b683-7fd5-4581-b201-30ac171e5414');
 
 INSERT INTO caregiver_patient_relation(caregiver_id, patient_id) VALUES(1, 1);
+
+
+INSERT INTO sensors(sensor_type, device_model, device_vendor, gateway_id) VALUES
+    ('pir_sensor', '0x00158d00057acbe7', 'Aqara', 1),
+    ('pir_sensor', '0x00158d0005729f17', 'Aqara', 1),
+    ('pir_sensor', '0x00158d00057b4d2a', 'Aqara', 1),
+    ('pir_sensor', '0x00158d00057b28ef', 'Aqara', 1),
+    ('pir_sensor', '0x00158d00057b2dce', 'Aqara', 1);
+
