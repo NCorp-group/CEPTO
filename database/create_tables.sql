@@ -70,10 +70,10 @@ ALTER TABLE sensors ADD FOREIGN KEY (gateway_id) REFERENCES gateways (id);
 
 CREATE PROCEDURE lightguide_dev.increment_visit_id()
 MODIFIES SQL DATA
-BEGIN
+/* BEGIN */
     UPDATE number_of_visits
         SET count = count + 1;
-END;
+/* END; */
 
 
 INSERT INTO event_types(event_type) VALUES
@@ -100,3 +100,10 @@ INSERT INTO sensors(sensor_type, device_model, device_vendor, gateway_id) VALUES
     ('pir_sensor', '0x00158d00057b28ef', 'Aqara', 1),
     ('pir_sensor', '0x00158d00057b2dce', 'Aqara', 1);
 
+
+INSERT INTO events(event_type_id, patient_id, gateway_id, visit_id) VALUES
+    (1, '1', '1', 1),
+    (2, '1', '1', 1),
+    (3, '1', '1', 1),
+    (4, '1', '1', 1),
+    (1, '1', '1', 2);
