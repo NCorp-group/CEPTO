@@ -22,6 +22,7 @@ class LightGuard:
 
         self.mqtt_server_ip = "192.168.0.124"
         self.mqtt_server_port = 1883
+        self.max_allowed_time = 60 * 30 # A bathroom visit can take a max time of 30 minutes
 
         # The model
         self.state = UserState.IN_BED
@@ -61,14 +62,21 @@ class LightGuard:
     def logic(self):
         while(True):
             if(self.state == UserState.IN_BED):
+
                 # Check if the first PIR sensor reports occupancy TRUE
                 if(self.pir_occupancy[0] == True):
                     self.turn_light_on(self.zones[0]['led'])
                     self.turn_light_on(self.zones[1]['led'])
                     self.state = UserState.TO_BATHROOM
                     self.event("left_bed")
+                    self.start_timer = time.time()
+                    self.timer_active = True
 
             if(self.state == UserState.TO_BATHROOM):
+                # Make sure the timer is not exeeded.
+                if(time.time() - self.start_timer > self.max_allowed_time and self.timer_active == True):
+                    self.event("notification")
+                    self.timer_active == False
                 # If the last PIR sensor is occupied, change state to in bathroom
                 if(self.pir_occupancy[len(self.zones)-1] == True):
                     self.state = UserState.IN_BATHROOM
@@ -86,6 +94,11 @@ class LightGuard:
                             break
 
             if(self.state == UserState.IN_BATHROOM):
+                # Make sure the timer is not exeeded.
+                if(time.time() - self.start_timer > self.max_allowed_time and self.timer_active == True):
+                    self.event("notification")
+                    self.timer_active == False
+
                 if(self.pir_occupancy[len(self.zones)-2] == True):
                     self.turn_light_off(self.zones[len(self.zones)-1]["led"])
                     self.turn_light_on(self.zones[len(self.zones)-3]["led"])
@@ -93,6 +106,11 @@ class LightGuard:
                     self.event("left_bathroom")
 
             if(self.state == UserState.TO_BED):
+                # Make sure the timer is not exeeded.
+                if(time.time() - self.start_timer > self.max_allowed_time and self.timer_active == True):
+                    self.event("notification")
+                    self.timer_active == False
+                
                 # If bed pir sensor is occupant, change state to in bed
                 if(self.pir_occupancy[0] == True):
                     self.state = UserState.IN_BED
@@ -103,6 +121,8 @@ class LightGuard:
                     for i in range(0, len(self.zones)):
                         self.turn_light_off(self.zones[i]['led'])
                     print("Program state resetting in 75 seconds")
+                    self.timer_active = False
+                    self.start_timer = 0
                     time.sleep(75)
                     print("Program state reset complete")
                 else:
