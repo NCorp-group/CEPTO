@@ -45,6 +45,7 @@ CREATE TABLE sensors (
     sensor_type ENUM ('pir_sensor', 'vibration_sensor') NOT NULL,
     device_model varchar(255) NOT NULL,
     device_vendor varchar(255) NOT NULL,
+    HEUCOD_sensor_id char(128) NOT NULL UNIQUE,
     gateway_id int NOT NULL
 );
 
@@ -93,12 +94,12 @@ INSERT INTO gateways(HEUCOD_gateway_id) VALUES('1fb3b683-7fd5-4581-b201-30ac171e
 INSERT INTO caregiver_patient_relation(caregiver_id, patient_id) VALUES(1, 1);
 
 
-INSERT INTO sensors(sensor_type, device_model, device_vendor, gateway_id) VALUES
-    ('pir_sensor', '0x00158d00057acbe7', 'Aqara', 1),
-    ('pir_sensor', '0x00158d0005729f17', 'Aqara', 1),
-    ('pir_sensor', '0x00158d00057b4d2a', 'Aqara', 1),
-    ('pir_sensor', '0x00158d00057b28ef', 'Aqara', 1),
-    ('pir_sensor', '0x00158d00057b2dce', 'Aqara', 1);
+INSERT INTO sensors(sensor_type, device_model, device_vendor, HEUCOD_sensor_id, gateway_id) VALUES
+    ('pir_sensor', '0x00158d00057acbe7', '5a679d06-6cd5-454d-bb86-2b1b5bdbdbb1', 'Aqara', 1),
+    ('pir_sensor', '0x00158d0005729f17', 'a7236416-0a5a-4119-9144-98293c99ab74', 'Aqara', 1),
+    ('pir_sensor', '0x00158d00057b4d2a', 'f3616519-a5f5-498b-b743-359f70457c10', 'Aqara', 1),
+    ('pir_sensor', '0x00158d00057b28ef', '10126825-8f93-4063-86a5-297e63caf692', 'Aqara', 1),
+    ('pir_sensor', '0x00158d00057b2dce', '97db76dd-0cda-4e1e-9148-dc93487e141b', 'Aqara', 1);
 
 
 INSERT INTO events(event_type_id, patient_id, gateway_id, visit_id) VALUES
