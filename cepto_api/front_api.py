@@ -4,6 +4,7 @@ from flask_cors import CORS
 from mysql.connector import connect, Error as MysqlError
 from dotenv import dotenv_values
 import hashlib
+from datetime import datetime
 
 DEBUG = True
 MARIADB_PORT = 3306
@@ -13,10 +14,11 @@ EVENTS = [
     'leaving_toilet',
     'arriving_at_bed',
     'notification'
-    'leaving_path' # OPTIONAL if we have time
+    'leaving_path'  # OPTIONAL if we have time
 ]
 
 CONFIG = dotenv_values(".env")
+
 
 class FrontApi:
     def __init__(self):
@@ -27,13 +29,14 @@ class FrontApi:
         # logging.basicConfig(filename='record.log', level=logging.DEBUG, format=f'%(asctime)s %(levelname)s %(name)s %(threadName)s : %(message)s')
 
         # enable CORS
-        CORS(self.app, resources={r'/*': {'origins': '*'}})
+        CORS(self.app)
+        # CORS(self.app, resources={r'/*': {'origins': '*'}})
 
         # sanity check route
         @self.app.route('/echo/<txt>', methods=['GET'])
         def echo(txt: str):
             return jsonify({
-                "echo":txt,
+                "echo": txt,
             })
 
         @self.app.route('/fetch-events/<usr>,<pwd>', methods=['GET'])
@@ -53,58 +56,62 @@ class FrontApi:
                     "database": CONFIG['DB_NAME']
                 }
 
-                with connect(**opts) as conn, conn.cursor(buffered=True) as cursor:
+                with connect(**opts) as conn:
+                    conn.time_zone = '+00:00'
+                    with conn.cursor(buffered=True) as cursor:
 
-                    fetch_events_query = f"""
-                    SELECT  
-                        e.timestamp,
-                        e.event_type_id, 
-                        e.patient_id,
-                        e.visit_id,
-                        p.full_name
-                    FROM
-                        events AS e
-                    INNER JOIN
-                        patients AS p
-                        ON
-                            e.patient_id = p.patient_id
-                    WHERE 
-                        p.id IN (
-                            SELECT patient_id
-                            FROM caregiver_patient_relation
-                            WHERE caregiver_id IN (
-                                SELECT id
-                                FROM caregivers
-                                WHERE username = '{usr}' AND login_credential_hash = '{user_hash}'
+                        fetch_events_query = f"""
+                        SELECT
+                       	    e.timestamp,
+                            et.event_type,
+                            e.visit_id,
+                            e.patient_id,
+                            p.full_name
+                        FROM events AS e
+                        JOIN event_types AS et
+                            ON e.event_type_id = et.id
+                        JOIN patients AS p
+                            ON e.patient_id = p.id
+                        WHERE
+                            p.id IN (
+                                SELECT patient_id
+                                FROM caregiver_patient_relation
+                                WHERE caregiver_id IN (
+                                    SELECT id
+                                    FROM caregivers
+                                    WHERE username = '{usr}' AND login_credential_hash = '{pwd}'
+                                )
                             )
-                    );
-                    """
+                        ;
+                        """
 
-                    cursor.execute(fetch_events_query)
-                    result = cursor.fetchall()
+                        cursor.execute(fetch_events_query)
+                        result = cursor.fetchall()
 
-                    if len(result) == 0:
-                        raise ValueError()
-            
+                        if len(result) == 0:
+                            raise ValueError()
+
             except MysqlError as err:
                 print(f"sql error: {err}")
                 return jsonify({
-                    "success":False,
-                    "events":[]
+                    "success": False,
+                    "events": []
                 })
-            
+
             except ValueError as err:
-                print(f"invalid query arguments (maybe login credentials are incorrect?)")
+                print(
+                    f"invalid query arguments (maybe login credentials are incorrect?)")
                 return jsonify({
-                    "success":False,
-                    "events":[]
+                    "success": False,
+                    "events": []
                 })
-            
+
             #### FORMATTING REPLY ####
             events = [
                 {
-                    "timestamp": event[0],
-                    "event_type_id": event[1],
+                    # "timestamp": datetime.utcfromtimestamp(event[0]),
+                    "timestamp": event[0].strftime("%Y-%m-%dT%H:%M:%S.%f%Z"),
+                    "event_type": event[1],
                     "patient_id": event[2],
                     "visit_id": event[3],
                     "patient_full_name": event[4]
@@ -117,7 +124,7 @@ class FrontApi:
                 "events": events
             })
 
-        self.app.run()
+        self.app.run(host='0.0.0.0', port=5000)
 
 
 if __name__ == "__main__":
