@@ -1,7 +1,7 @@
 import json
 import sys
 from typing import Dict, Any
-import time 
+import time
 import datetime
 import hashlib
 
@@ -61,8 +61,8 @@ def insert_bathroom_event_into_db(bathroom_event: Dict[str, Any]) -> None:
                     VALUES(
                         '{bathroom_event['timestamp']}',
                         (SELECT id FROM event_types WHERE event_type = '{bathroom_event['event_type']}'),
-                        (SELECT id FROM patients WHERE patient_id = '{bathroom_event['patient_id']}'),
-                        (SELECT id FROM gateways WHERE gateway_id = '{bathroom_event['gateway_id']}'),
+                        (SELECT id FROM patients WHERE HEUCOD_patient_id = '{bathroom_event['patient_id']}'),
+                        (SELECT id FROM gateways WHERE HEUCOD_gateway_id = '{bathroom_event['gateway_id']}'),
                         (SELECT count FROM number_of_visits)
                     );
                     """
