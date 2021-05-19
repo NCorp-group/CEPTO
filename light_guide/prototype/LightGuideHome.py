@@ -108,7 +108,7 @@ class LightGuard:
             if(self.state == UserState.TO_BED):
                 # Make sure the timer is not exeeded.
                 if(time.time() - self.start_timer > self.max_allowed_time and self.timer_active == True):
-                    self.event("notification")
+                    self.event("alert")
                     self.timer_active == False
                 
                 # If bed pir sensor is occupant, change state to in bed
