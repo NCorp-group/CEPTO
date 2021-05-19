@@ -25,7 +25,6 @@ OPTS = {
     "database": CONFIG['DB_NAME']
 }
 
-
 class FrontApi:
     def __init__(self):
         # instantiate the app
@@ -209,14 +208,10 @@ class FrontApi:
         
         self.app.run(host='0.0.0.0', port=5000)
 
-
-
-
 def login_hash(usr: str, pwd: str) -> str:
     usr_bytes = usr.encode(encoding='ASCII')
     pwd_bytes = pwd.encode(encoding='ASCII')
     return hashlib.sha256(usr_bytes + pwd_bytes).hexdigest()
-
 
 if __name__ == "__main__":
     api = FrontApi()
