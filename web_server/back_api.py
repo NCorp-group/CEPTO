@@ -111,7 +111,7 @@ def on_message(client, userdata, msg) -> None:
     try:
         bathroom_event = json.loads(msg.payload)    # json.JSONDecoderError
         if bathroom_event.get('timestamp') is None:
-            bathroom_event['timestamp'] = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+            bathroom_event['timestamp'] = datetime.datetime.now(datetime.timezone.utc).strftime("%Y-%m-%d %H:%M:%S")
         insert_bathroom_event_into_db(bathroom_event)
     except json.JSONDecodeError as err:
         logger.error(f"Could not parse json msg.payload. {err.msg}")
