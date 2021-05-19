@@ -4,6 +4,7 @@ from enum import Enum
 import datetime
 import time
 import json
+import os
 
 class UserState(Enum):
     IN_BED = 1
@@ -15,14 +16,16 @@ class UserState(Enum):
 class LightGuard:
     def __init__(self):
         # Reading the information from config.json
-        fileObject = open("light_guide/prototype/config.json", "r")
+        fileObject = open("light_guide/production/config.json", "r")
         jsonContent = fileObject.read()
         self.room_info = json.loads(jsonContent)["room_info"]
         self.zones = json.loads(jsonContent)["zones"]
 
-        self.mqtt_server_ip = "192.168.0.124"
+        self.mqtt_server_ip = "127.0.0.1"
+        self.mqtt_database_ip = "10.9.2.73"
         self.mqtt_server_port = 1883
-        self.max_allowed_time = 60 * 30 # A bathroom visit can take a max time of 30 minutes
+        self.max_allowed_time = 60 * 2 # A bathroom visit can take a max time of 30 minutes (temp 2 minutes)
+        self.timer_active = False
 
         # The model
         self.state = UserState.IN_BED
@@ -61,24 +64,24 @@ class LightGuard:
     # 3. There are at least 3 zones in the system
     def logic(self):
         while(True):
-            if(self.state == UserState.IN_BED):
+            # Make sure the timer is not exeeded
+            if(self.timer_active == True and time.time() - self.start_timer > self.max_allowed_time):
+                self.event("alert")
+                self.timer_active = False
 
+            if(self.state == UserState.IN_BED):
                 # Check if the first PIR sensor reports occupancy TRUE
                 if(self.pir_occupancy[0] == True):
-                    current_hour = datetime.datetime().hour
-                    if(current_hour < 9 and current_hour >= 22): # Only start new visit if the time is between 22:00 and 09:00
+                    current_hour = datetime.datetime.now(datetime.timezone.utc).hour
+                    if(current_hour >= 9 and current_hour < 22): # Only start new visit if the time is between 22:00 and 09:00
                         self.turn_light_on(self.zones[0]['led'])
                         self.turn_light_on(self.zones[1]['led'])
                         self.state = UserState.TO_BATHROOM
                         self.event("left_bed")
                         self.start_timer = time.time()
                         self.timer_active = True
-
-            if(self.state == UserState.TO_BATHROOM):
-                # Make sure the timer is not exeeded.
-                if(time.time() - self.start_timer > self.max_allowed_time and self.timer_active == True):
-                    self.event("notification")
-                    self.timer_active == False
+                        
+            elif(self.state == UserState.TO_BATHROOM):
                 # If the last PIR sensor is occupied, change state to in bathroom
                 if(self.pir_occupancy[len(self.zones)-1] == True):
                     self.state = UserState.IN_BATHROOM
@@ -95,24 +98,14 @@ class LightGuard:
                                 self.turn_light_off(self.zones[j]['led'])
                             break
 
-            if(self.state == UserState.IN_BATHROOM):
-                # Make sure the timer is not exeeded.
-                if(time.time() - self.start_timer > self.max_allowed_time and self.timer_active == True):
-                    self.event("notification")
-                    self.timer_active == False
-
+            elif(self.state == UserState.IN_BATHROOM):
                 if(self.pir_occupancy[len(self.zones)-2] == True):
                     self.turn_light_off(self.zones[len(self.zones)-1]["led"])
                     self.turn_light_on(self.zones[len(self.zones)-3]["led"])
                     self.state = UserState.TO_BED
                     self.event("left_bathroom")
 
-            if(self.state == UserState.TO_BED):
-                # Make sure the timer is not exeeded.
-                if(time.time() - self.start_timer > self.max_allowed_time and self.timer_active == True):
-                    self.event("alert")
-                    self.timer_active == False
-                
+            elif(self.state == UserState.TO_BED):
                 # If bed pir sensor is occupant, change state to in bed
                 if(self.pir_occupancy[0] == True):
                     self.state = UserState.IN_BED
@@ -138,10 +131,10 @@ class LightGuard:
     def event(self, event):
         print("Sending event:", event)
         pub = mqtt.Client()
-        pub.connect(self.mqtt_server_ip, self.mqtt_server_port)
+        pub.connect(self.mqtt_database_ip, self.mqtt_server_port)
         message = {
             "event_type": event,
-            "timestamp": datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
+            "timestamp": datetime.datetime.now(datetime.timezone.utc).strftime("%Y-%m-%d %H:%M:%S"),
             "patient_id": self.room_info["patient_id"],
             "gateway_id": self.room_info["gateway_id"]
         }
