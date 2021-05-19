@@ -137,7 +137,7 @@ class FrontApi:
                             et.event_type,
                             et.id,
                             p.HEUCOD_patient_id,
-                            s.HEUCOD_id,
+                            s.HEUCOD_sensor_id,
                             s.sensor_type,
                             s.device_model,
                             s.device_vendor,

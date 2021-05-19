@@ -7,8 +7,3 @@ source ./bin/activate
 
 # install PIP dependencies
 pip install -r requirements.txt
-
-# install and set-up MariaDB
-sudo apt install mariadb-server
-
-# TODO: finish setting up mariadb user and source database
