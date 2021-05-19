@@ -41,7 +41,7 @@ class LightGuard:
         for i in range(0, len(self.zones)):
             sub.subscribe(f"zigbee2mqtt/{self.zones[i]['pir']}", 1)
         sub.on_message = self.on_message
-        print("Waiting for events")
+        print("Ready for events")
         sub.loop_start()
 
         self.logic()
@@ -65,12 +65,14 @@ class LightGuard:
 
                 # Check if the first PIR sensor reports occupancy TRUE
                 if(self.pir_occupancy[0] == True):
-                    self.turn_light_on(self.zones[0]['led'])
-                    self.turn_light_on(self.zones[1]['led'])
-                    self.state = UserState.TO_BATHROOM
-                    self.event("left_bed")
-                    self.start_timer = time.time()
-                    self.timer_active = True
+                    current_hour = datetime.datetime().hour
+                    if(current_hour < 9 and current_hour >= 22): # Only start new visit if the time is between 22:00 and 09:00
+                        self.turn_light_on(self.zones[0]['led'])
+                        self.turn_light_on(self.zones[1]['led'])
+                        self.state = UserState.TO_BATHROOM
+                        self.event("left_bed")
+                        self.start_timer = time.time()
+                        self.timer_active = True
 
             if(self.state == UserState.TO_BATHROOM):
                 # Make sure the timer is not exeeded.
