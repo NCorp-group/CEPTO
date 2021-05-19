@@ -1,0 +1,6 @@
+flask
+flask_cors
+loguru >= 0.5.3
+mysql-connector-python >= 8.0.24
+paho-mqtt >= 1.5.1
+python-dotenv >= 0.17.1
