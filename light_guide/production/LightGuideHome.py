@@ -5,6 +5,7 @@ import datetime
 import time
 import json
 import os
+import sys
 
 class UserState(Enum):
     IN_BED = 1
@@ -22,7 +23,7 @@ class LightGuard:
         self.zones = json.loads(jsonContent)["zones"]
 
         self.mqtt_server_ip = "127.0.0.1"
-        self.mqtt_database_ip = "10.9.2.73"
+        self.mqtt_database_ip = sys.argv[1]
         self.mqtt_server_port = 1883
         self.max_allowed_time = 60 * 2 # A bathroom visit can take a max time of 30 minutes (temp 2 minutes)
         self.timer_active = False
@@ -60,11 +61,11 @@ class LightGuard:
 
     # Assumptions: 
     # 1. Person starts in bed
-    # 2. Has to walk all the way to and from bathroom thorugh the zones
+    # 2. Has to walk all the way to and from bathroom through the zones
     # 3. There are at least 3 zones in the system
     def logic(self):
         while(True):
-            # Make sure the timer is not exeeded
+            # Make sure the timer is not exceeded
             if(self.timer_active == True and time.time() - self.start_timer > self.max_allowed_time):
                 self.event("alert")
                 self.timer_active = False
