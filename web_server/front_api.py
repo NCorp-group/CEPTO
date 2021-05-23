@@ -59,8 +59,8 @@ class FrontApi:
                         SELECT
                        	    e.timestamp,
                             et.event_type,
-                            e.visit_id,
                             e.patient_id,
+                            e.visit_id,
                             p.full_name
                         FROM events AS e
                         JOIN event_types AS et
