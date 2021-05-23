@@ -6,10 +6,17 @@
 <!-- code_chunk_output -->
 
 - [CEPTO LightGuide](#cepto-lightguide)
+  - [Cloning the repository](#cloning-the-repository)
   - [Raspberry PI](#raspberry-pi)
+    - [Install NodeJS](#install-nodejs)
+    - [Zigbee2mqtt](#zigbee2mqtt)
+    - [Mosquitto-broker](#mosquitto-broker)
+  - [# Install paho-mqtt](#-install-paho-mqtt)
+    - [Running the program](#running-the-program)
   - [Webserver/Database](#webserverdatabase)
     - [Install dependencies](#install-dependencies)
     - [Setup MariaDB database](#setup-mariadb-database)
+    - [Running the web server](#running-the-web-server)
 
 <!-- /code_chunk_output -->
 ## Cloning the repository
