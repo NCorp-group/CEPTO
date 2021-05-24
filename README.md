@@ -85,12 +85,12 @@ python LightGuideHome.py <web_server_ip>
 
 Source the `web_server/launch.sh` with root permissions. If the script is not executable, then first change its file permissions with the following commands:
 ```sh
-chmod u+x web_server/launch.sh
+chmod u+x web_server/install.sh
 ```
 
 The script can then the executed with the following command:
 ```sh
-sudo ./web_server/launch.sh
+sudo ./web_server/install.sh
 ```
 
 ### Setup MariaDB database
