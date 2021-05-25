@@ -1,6 +1,6 @@
-DROP DATABASE IF EXISTS lightguide_dev;
-CREATE DATABASE lightguide_dev;
-USE lightguide_dev;
+DROP DATABASE IF EXISTS lightguide_db;
+CREATE DATABASE lightguide_db;
+USE lightguide_db;
 
 
 CREATE TABLE events (
@@ -69,7 +69,7 @@ ALTER TABLE events ADD FOREIGN KEY (gateway_id) REFERENCES gateways (id);
 ALTER TABLE sensors ADD FOREIGN KEY (gateway_id) REFERENCES gateways (id);
 
 
-CREATE PROCEDURE lightguide_dev.increment_visit_id()
+CREATE PROCEDURE lightguide_db.increment_visit_id()
 MODIFIES SQL DATA
 /* BEGIN */
     UPDATE number_of_visits
@@ -83,7 +83,7 @@ INSERT INTO event_types(event_type) VALUES
     ('left_bed'),
     ('left_path'),
     ('left_bathroom'),
-    ('notification');
+    ('alert');
 
 INSERT INTO patients(HEUCOD_patient_id, full_name) VALUES('041cb23-31f4-4b27-a20b-d160564e2e687', 'test_patient');
 
@@ -102,9 +102,9 @@ INSERT INTO sensors(sensor_type, device_model, device_vendor, HEUCOD_sensor_id, 
     ('pir_sensor', '0x00158d00057b2dce', 'Aqara', '97db76dd-0cda-4e1e-9148-dc93487e141b', 1);
 
 
-INSERT INTO events(event_type_id, patient_id, gateway_id, visit_id) VALUES
-    (1, '1', '1', 1),
-    (2, '1', '1', 1),
-    (3, '1', '1', 1),
-    (4, '1', '1', 1),
-    (1, '1', '1', 2);
+-- INSERT INTO events(event_type_id, patient_id, gateway_id, visit_id) VALUES
+--    (1, '1', '1', 1),
+--    (2, '1', '1', 1),
+--    (3, '1', '1', 1),
+--    (4, '1', '1', 1),
+--    (1, '1', '1', 2);
