@@ -58,11 +58,6 @@ class LightGuard:
                 if(msg.topic == f"zigbee2mqtt/{self.zones[i]['pir']}"):
                     self.pir_occupancy[i] = dictionary["occupancy"]
         
-
-    # Assumptions: 
-    # 1. Person starts in bed
-    # 2. Has to walk all the way to and from bathroom through the zones
-    # 3. There are at least 3 zones in the system
     def logic(self):
         while(True):
             # Make sure the timer is not exceeded
