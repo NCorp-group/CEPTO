@@ -38,6 +38,8 @@ Please follow the documentation for pairing the light strips and PIR sensors:
 
 **PIR sensor:** https://www.zigbee2mqtt.io/devices/RTCGQ11LM.html
 
+A configuration example for the zigbee2mqtt devices can be found at ``CEPTO/light_guide/setup/configuration.yaml``, this has been used during development and tested.
+
 ### Install NodeJS
 ```
 sudo curl -sL https://deb.nodesource.com/setup_14.x | sudo -E bash -
