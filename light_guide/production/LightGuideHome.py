@@ -25,7 +25,7 @@ class LightGuard:
         self.mqtt_server_ip = "127.0.0.1"
         self.mqtt_database_ip = sys.argv[1]
         self.mqtt_server_port = 1883
-        self.max_allowed_time = 60 * 2 # A bathroom visit can take a max time of 30 minutes (temp 2 minutes)
+        self.max_allowed_time = 60 * 30 # A bathroom visit can take a max time of 30 minutes (temp 2 minutes)
         self.timer_active = False
 
         # The model
