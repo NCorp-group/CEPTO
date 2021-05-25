@@ -1,6 +1,6 @@
-DROP DATABASE IF EXISTS lightguide_dev;
-CREATE DATABASE lightguide_dev;
-USE lightguide_dev;
+DROP DATABASE IF EXISTS lightguide_db;
+CREATE DATABASE lightguide_db;
+USE lightguide_db;
 
 
 CREATE TABLE events (
@@ -83,7 +83,7 @@ INSERT INTO event_types(event_type) VALUES
     ('left_bed'),
     ('left_path'),
     ('left_bathroom'),
-    ('notification');
+    ('alert');
 
 INSERT INTO patients(HEUCOD_patient_id, full_name) VALUES('041cb23-31f4-4b27-a20b-d160564e2e687', 'test_patient');
 
