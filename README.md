@@ -84,9 +84,9 @@ pip3 install paho-mqtt
 ### Running the program
 Make sure to have set the correct friendly names in the configuration file at ``CEPTO/light_guide/production/config.json``, the default should match ``CEPTO/light_guide/setup/configuration.yaml``.
 
-Head to the root of the `CEPTO` repository in the cloned repository.
+Head to the root of the cloned `CEPTO` repository.
 ```shell=sh
-python3 CEPTO/light_guide/production/LightGuideHome.py <web_server_ip>
+python3 light_guide/production/LightGuideHome.py <web_server_ip>
 ```
 
 ## Webserver/Database
