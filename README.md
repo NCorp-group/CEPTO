@@ -30,6 +30,12 @@ git clone https://github.com/NCorp-group/CEPTO.git
 
 ## Raspberry PI
 
+### Pair devices
+
+Please follow the documentation for pairing the light strips and PIR sensors:
+**Light strip:** https://www.zigbee2mqtt.io/devices/GL-MC-001P.html
+**PIR sensor:** https://www.zigbee2mqtt.io/devices/RTCGQ11LM.html
+
 ### Install NodeJS
 ```
 sudo curl -sL https://deb.nodesource.com/setup_14.x | sudo -E bash -
