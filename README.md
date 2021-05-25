@@ -82,6 +82,8 @@ sudo systemctl start mosquitto.service
 pip3 install paho-mqtt
 ```
 ### Running the program
+Make sure to have set the correct friendly names in the configuration file at ``CEPTO/light_guide/production/config.json``, the default should match ``CEPTO/light_guide/setup/configuration.yaml``.
+
 Head to `CEPTO/light_guide/production/` in the cloned repository.
 ```shell=sh
 python LightGuideHome.py <web_server_ip>
