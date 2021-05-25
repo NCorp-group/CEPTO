@@ -115,8 +115,8 @@ sudo mariadb
 First create the database user, and assign appropriate permissions:
 
 ```sql
-CREATE USER 'testuser'@localhost IDENTIFIED BY 'test';
-GRANT ALL PRIVILEGES ON *.* TO 'testuser'@localhost IDENTIFIED BY 'test';
+CREATE USER 'lg_user'@localhost IDENTIFIED BY 'lg_password';
+GRANT ALL PRIVILEGES ON *.* TO 'lg_user'@localhost IDENTIFIED BY 'lg_password';
 ```
 
 Then setup and create the database schema:
