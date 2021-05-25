@@ -86,7 +86,7 @@ Make sure to have set the correct friendly names in the configuration file at ``
 
 Head to `CEPTO/light_guide/production/` in the cloned repository.
 ```shell=sh
-python LightGuideHome.py <web_server_ip>
+python3 LightGuideHome.py <web_server_ip>
 ```
 
 ## Webserver/Database
