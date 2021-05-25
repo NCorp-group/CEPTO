@@ -69,7 +69,7 @@ sudo systemctl start mosquitto.service
 
 ## # Install paho-mqtt
 ```shell=sh
-pip install paho-mqtt
+pip3 install paho-mqtt
 ```
 ### Running the program
 Head to `CEPTO/light_guide/production/` in the cloned repository.
