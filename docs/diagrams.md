@@ -8,7 +8,7 @@ participant "++Zigbee Coordinator++" as zb
 participant "++PIR Sensor++" as pir
 participant "++Light Strip++" as light
 
-ctrl ->> mqtt: subscribe to pir_sensor
+ctrl ->> mqtt: subscribe to PIR sensor topic
 
 loop
 pir -> pir: detect movement
@@ -19,19 +19,19 @@ opt change in state
 pir ->> zb: publish state
 deactivate pir 
 activate zb #lightgrey
-zb ->> mqtt: publish to pir_sensor
+zb ->> mqtt:publish to PIR sensor topic
 deactivate zb
 activate mqtt #lightgrey
-mqtt ->> ctrl: on_message() callback
+mqtt ->> ctrl:callback
 deactivate mqtt
 activate ctrl #lightgrey
-note over ctrl: controller filters out all irrelevant topics, \n i.e. it only reacts to occupancy changes
+note over ctrl:controller determines which light strips to turn on and off
 
-opt occupancy changed
-ctrl ->> mqtt: publish to light_strip/state
+opt light strip state change
+ctrl ->> mqtt:publish to light strip topic
 deactivate ctrl
 activate mqtt #lightgrey
-mqtt ->> zb: publish light_strip/state
+mqtt ->> zb:publish
 deactivate mqtt
 activate zb #lightgrey
 zb ->> light: update light strip state
@@ -45,6 +45,8 @@ Sequence diagram for client-server interaction:
 ````
 title Raspberry PI - Server Interaction
 
+participant [
+
 participantgroup #eeeeee **Client**
 participant "++Light Guide Home++" as client
 # participant "++MQTT Publisher++" as mqtt_c
@@ -54,13 +56,13 @@ participant "++MQTT Broker++" as broker
 
 participantgroup #eeeeee **Server**
 #participant "++MQTT Subscriber++" as mqtt_s
-participant "++LG Web Server++" as server
+participant "++Back-end API++" as server
 participant "++Database Manager" as db
 end
 
 note over client,server: MQTT is distributed between client and server.
 
-server ->> broker: subscribe to user_vacancy_data
+server ->> broker:subscribe to events topic
 activate broker #cccccc
 broker -->> server: subscription ack
 deactivate broker
@@ -68,13 +70,13 @@ opt incoming sensor data
 [->> client:
 activate client #cccccc
 note over client: Processes sensor data\n and publishes results in\n a new topic.
-client ->> broker: publish to user_vacancy_data
+client ->> broker:publish to events topic
 deactivate client
 # activate broker #cccccc
 # mqtt_c ->> mqtt_s: publish to user_vacancy_data
 # deactivate broker #cccccc
 activate broker #cccccc
-broker ->> server: on_message() callback
+broker ->> server:callback
 deactivate broker
 activate server #cccccc
 server ->> db: create new entry
@@ -90,9 +92,11 @@ Sequence diagram for Server - Webapp
 ````
 title Server - Caregiver PC Interaction
 
+participant ]
+
 participantgroup #eeeeee Server
 participant "Database Manager" as db
-participant "LG Web Server" as s_logic
+participant "Web API" as s_logic
 //vparticipant "Web API" as api
 end
 
@@ -100,14 +104,14 @@ participantgroup #eeeeee Caregiver Browser
 // participant "Browser\nHTTP Handler" as http
 //participant "Vue.js Component" as vue
 //participant "DOM" as dom
-participant "LG Web App" as vue
+participant "Web App" as vue
 end
 
 
 ]-->> *vue: GET web page from 3rd party host
 
 opt caregiver interacts with page element
-vue ->> s_logic: user interagtion
+vue ->> s_logic:user interaction
 activate s_logic #cccccc
 opt request requires database access
 s_logic -> db: query
