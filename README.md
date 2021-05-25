@@ -33,6 +33,7 @@ git clone https://github.com/NCorp-group/CEPTO.git
 ### Pair devices
 
 Please follow the documentation for pairing the light strips and PIR sensors:
+
 **Light strip:** https://www.zigbee2mqtt.io/devices/GL-MC-001P.html
 **PIR sensor:** https://www.zigbee2mqtt.io/devices/RTCGQ11LM.html
 
