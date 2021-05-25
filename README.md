@@ -118,6 +118,13 @@ First create the database user, and assign appropriate permissions:
 CREATE USER 'lg_user'@localhost IDENTIFIED BY 'lg_password';
 GRANT ALL PRIVILEGES ON *.* TO 'lg_user'@localhost IDENTIFIED BY 'lg_password';
 ```
+Logout of the mariadb root shell (either type `exit` or type `ctrl+D`), and login to the newly created user account:
+
+ ```sh
+mysql -u lg_user -p
+ ```
+ 
+ You will be prompted to type the password. Type `lg_password`.
 
 Then setup and create the database schema:
 ```sql
