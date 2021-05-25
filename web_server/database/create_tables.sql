@@ -69,7 +69,7 @@ ALTER TABLE events ADD FOREIGN KEY (gateway_id) REFERENCES gateways (id);
 ALTER TABLE sensors ADD FOREIGN KEY (gateway_id) REFERENCES gateways (id);
 
 
-CREATE PROCEDURE lightguide_dev.increment_visit_id()
+CREATE PROCEDURE lightguide_db.increment_visit_id()
 MODIFIES SQL DATA
 /* BEGIN */
     UPDATE number_of_visits
