@@ -101,7 +101,7 @@ sudo systemctl enable mosquitto.service
 sudo systemctl start mosquitto.service
 ```
 
-## # Install paho-mqtt
+### Install paho-mqtt
 ```shell=sh
 pip3 install paho-mqtt
 ```
