@@ -7,11 +7,14 @@
 
 - [CEPTO LightGuide](#cepto-lightguide)
   - [Cloning the repository](#cloning-the-repository)
+  - [Requirements](#requirements)
+    - [Hardware](#hardware)
+    - [Software](#software)
   - [Raspberry PI](#raspberry-pi)
     - [Install NodeJS](#install-nodejs)
     - [Zigbee2mqtt](#zigbee2mqtt)
     - [Mosquitto-broker](#mosquitto-broker)
-  - [# Install paho-mqtt](#-install-paho-mqtt)
+  - [Install paho-mqtt](#-install-paho-mqtt)
     - [Running the program](#running-the-program)
   - [Webserver/Database](#webserverdatabase)
     - [Install dependencies](#install-dependencies)
@@ -20,13 +23,34 @@
 
 <!-- /code_chunk_output -->
 ## Cloning the repository
-Open your preferred termminal
+Open your preferred terminal
 
 Navigate to the directory where you want to clone the CEPTO Light Guide repository, and execute the following:
 
 ```shell=sh
 git clone https://github.com/NCorp-group/CEPTO.git
 ```
+
+## Requirements
+To setup the entire project you will need the following list of hardware- and software components.
+
+### Hardware
+
+| Component | Quantity | Tested with |
+|-----------|----------|-------------|
+| Raspberry Pi 4B | 1 Raspberry Pi | 1 Raspberry Pi 4B 4GB RAM |
+| [Supported zigbee adapter](https://www.zigbee2mqtt.io/getting_started/what_do_i_need.html#supported-zigbee-adapter) | 1 adapter | 1 [Texas Instruments CC2531](https://www.zigbee2mqtt.io/information/supported_adapters.html) | 
+| [Xiaomi RTCGQ11LM (PIR sensors)](https://www.zigbee2mqtt.io/devices/RTCGQ11LM.html) | At least 3 sensors | 5 sensors |
+| [Gledopto GL-MC-001P (Light strips)](https://www.zigbee2mqtt.io/devices/GL-MC-001P.html) | At least 3 light strips | 5 light strips |
+
+### Software
+|Component | Tested with |
+|----------|-------------|
+| [Ubuntu Server](https://ubuntu.com/download/server) | Version 20.04 LTS |
+| [Raspberry Pi OS](https://www.raspberrypi.org/software/operating-systems/#raspberry-pi-os-32-bit) | 2021-03-04 release |
+| [MariaDB relational database](https://mariadb.org/) | Version 10.5.9 | 
+| [zigbee2mqtt](https://github.com/koenkk/zigbee2mqtt) | Version 1.18.3 |
+
 
 ## Raspberry PI
 
@@ -77,7 +101,7 @@ sudo systemctl enable mosquitto.service
 sudo systemctl start mosquitto.service
 ```
 
-## # Install paho-mqtt
+### Install paho-mqtt
 ```shell=sh
 pip3 install paho-mqtt
 ```
@@ -92,8 +116,6 @@ python3 light_guide/production/LightGuideHome.py <web_server_ip>
 ## Webserver/Database
 
 ### Install dependencies
-
-**TODO** 
 
 Source the `web_server/launch.sh` with root permissions. If the script is not executable, then first change its file permissions with the following commands:
 ```sh
