@@ -39,7 +39,7 @@ To setup the entire project you will need the following list of hardware- and so
 
 |   Component   |  Quantity  |  Tested with  |
 |---------------|------------|---------------|
-|   Raspberry Pi 4b | 1 unit | The 4 Gb RAM version |
+|   Raspberry Pi 4b | 1 unit | 4 GB RAM version |
 | [Supported zigbee adapter](https://www.zigbee2mqtt.io/getting_started/what_do_i_need.html#supported-zigbee-adapter) | 1 unit  | [Texas Instruments CC2531](https://www.zigbee2mqtt.io/information/supported_adapters.html) | 
 | [Xiaomi RTCGQ11LM (PIR sensor)](https://www.zigbee2mqtt.io/devices/RTCGQ11LM.html) | At least 3 units | 5 units |
 | [Gledopto GL-MC-001P (led strip)](https://www.zigbee2mqtt.io/devices/GL-MC-001P.html) | At least 3 units | 5 units |
