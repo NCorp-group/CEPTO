@@ -69,7 +69,7 @@ class LightGuard:
                 # Check if the first PIR sensor reports occupancy TRUE
                 if(self.pir_occupancy[0] == True):
                     current_hour = datetime.datetime.now(datetime.timezone.utc).hour
-                    if(current_hour <= 9 or current_hour >= 22): # Only start new visit if the time is between 22:00 and 09:00
+                    if(current_hour <= 9 or current_hour > 22): # Only start new visit if the time is between 22:00 and 09:00
                         self.turn_light_on(self.zones[0]['led'])
                         self.turn_light_on(self.zones[1]['led'])
                         self.state = UserState.TO_BATHROOM
