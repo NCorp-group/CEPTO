@@ -23,7 +23,7 @@
 
 <!-- /code_chunk_output -->
 ## Cloning the repository
-Open your preferred termminal
+Open your preferred terminal
 
 Navigate to the directory where you want to clone the CEPTO Light Guide repository, and execute the following:
 
@@ -35,16 +35,13 @@ git clone https://github.com/NCorp-group/CEPTO.git
 To setup the entire project you will need the following list of hardware- and software components.
 
 ### Hardware
-- Raspberry Pi 4b
 
-|   Component   |  Quantity  |  Tested with  |
-|---------------|------------|---------------|
-|   Raspberry Pi 4b | 1 unit | 4 GB RAM version |
-| [Supported zigbee adapter](https://www.zigbee2mqtt.io/getting_started/what_do_i_need.html#supported-zigbee-adapter) | 1 unit  | [Texas Instruments CC2531](https://www.zigbee2mqtt.io/information/supported_adapters.html) | 
-| [Xiaomi RTCGQ11LM (PIR sensor)](https://www.zigbee2mqtt.io/devices/RTCGQ11LM.html) | At least 3 units | 5 units |
-| [Gledopto GL-MC-001P (led strip)](https://www.zigbee2mqtt.io/devices/GL-MC-001P.html) | At least 3 units | 5 units |
-
-### Software
+|component   | quantity | tested with   |
+--------------|--------| -- |
+|   Raspberry Pi 4b        | 1 |     The 4 Gb RAM version  |
+| [Supported zigbee adapter](https://www.zigbee2mqtt.io/getting_started/what_do_i_need.html#supported-zigbee-adapter) | 1  | [Texas Instruments CC2531](https://www.zigbee2mqtt.io/information/supported_adapters.html) | 
+| [Xiaomi RTCGQ11LM (PIR sensor)](https://www.zigbee2mqtt.io/devices/RTCGQ11LM.html) | at least 3 | 5 units |
+| [Gledopto GL-MC-001P (led strip)](https://www.zigbee2mqtt.io/devices/GL-MC-001P.html) | at least 3 | 5 units |
 
 
 ## Raspberry PI
