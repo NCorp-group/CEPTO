@@ -36,16 +36,16 @@ To setup the entire project you will need the following list of hardware- and so
 
 ### Hardware
 
-|component   | quantity | tested with   |
---------------|--------| -- |
-|   Raspberry Pi 4b        | 1 |     The 4 Gb RAM version  |
-| [Supported zigbee adapter](https://www.zigbee2mqtt.io/getting_started/what_do_i_need.html#supported-zigbee-adapter) | 1  | [Texas Instruments CC2531](https://www.zigbee2mqtt.io/information/supported_adapters.html) | 
-| [Xiaomi RTCGQ11LM (PIR sensor)](https://www.zigbee2mqtt.io/devices/RTCGQ11LM.html) | at least 3 | 5 units |
-| [Gledopto GL-MC-001P (led strip)](https://www.zigbee2mqtt.io/devices/GL-MC-001P.html) | at least 3 | 5 units |
+| Component | Quantity | Tested with |
+|-----------|----------|-------------|
+| Raspberry Pi 4B | 1 unit | 1 Raspberry Pi 4B 4GB RAM |
+| [Supported zigbee adapter](https://www.zigbee2mqtt.io/getting_started/what_do_i_need.html#supported-zigbee-adapter) | 1 unit | 1 [Texas Instruments CC2531](https://www.zigbee2mqtt.io/information/supported_adapters.html) | 
+| [Xiaomi RTCGQ11LM (PIR sensors)](https://www.zigbee2mqtt.io/devices/RTCGQ11LM.html) | At least 3 sensors | 5 sensors |
+| [Gledopto GL-MC-001P (Light strips)](https://www.zigbee2mqtt.io/devices/GL-MC-001P.html) | At least 3 light strips | 5 light strips |
 
 ### Software
-|Component | Tested with   |
---------------| -- |
+|Component | Tested with |
+|----------|-------------|
 | [Ubuntu Server](https://ubuntu.com/download/server) | Version 20.04 LTS |
 | [Raspberry Pi OS](https://www.raspberrypi.org/software/operating-systems/#raspberry-pi-os-32-bit) | 2021-03-04 release |
 | [MariaDB relational database](https://mariadb.org/) | Version 10.5.9 | 
