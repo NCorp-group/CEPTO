@@ -43,6 +43,14 @@ To setup the entire project you will need the following list of hardware- and so
 | [Xiaomi RTCGQ11LM (PIR sensor)](https://www.zigbee2mqtt.io/devices/RTCGQ11LM.html) | at least 3 | 5 units |
 | [Gledopto GL-MC-001P (led strip)](https://www.zigbee2mqtt.io/devices/GL-MC-001P.html) | at least 3 | 5 units |
 
+### Software
+|Component | Tested with   |
+--------------| -- |
+| [Ubuntu Server](https://ubuntu.com/download/server) | Version 20.04 LTS |
+| [Raspberry Pi OS](https://www.raspberrypi.org/software/operating-systems/#raspberry-pi-os-32-bit) | 2021-03-04 release |
+| [MariaDB relational database](https://mariadb.org/) | Version 10.5.9 | 
+| [zigbee2mqtt](https://github.com/koenkk/zigbee2mqtt) | Version 1.18.3 |
+
 
 ## Raspberry PI
 
