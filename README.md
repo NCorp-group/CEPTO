@@ -7,6 +7,9 @@
 
 - [CEPTO LightGuide](#cepto-lightguide)
   - [Cloning the repository](#cloning-the-repository)
+  - [Requirements](#requirements)
+    - [Hardware](#hardware)
+    - [Software](#software)
   - [Raspberry PI](#raspberry-pi)
     - [Install NodeJS](#install-nodejs)
     - [Zigbee2mqtt](#zigbee2mqtt)
@@ -27,6 +30,22 @@ Navigate to the directory where you want to clone the CEPTO Light Guide reposito
 ```shell=sh
 git clone https://github.com/NCorp-group/CEPTO.git
 ```
+
+## Requirements
+To setup the entire project you will need the following list of hardware- and software components.
+
+### Hardware
+- Raspberry Pi 4b
+
+|component   | quantity | tested with   |
+--------------|--------| -- |
+|   Raspberry Pi 4b        | 1 |     The 4 Gb RAM version  |
+| [Supported zigbee adapter](https://www.zigbee2mqtt.io/getting_started/what_do_i_need.html#supported-zigbee-adapter) | 1  | [Texas Instruments CC2531](https://www.zigbee2mqtt.io/information/supported_adapters.html) | 
+| [Xiaomi RTCGQ11LM (PIR sensor)](https://www.zigbee2mqtt.io/devices/RTCGQ11LM.html) | at least 3 | 5 units |
+| [Gledopto GL-MC-001P (led strip)](https://www.zigbee2mqtt.io/devices/GL-MC-001P.html) | at least 3 | 5 units |
+
+### Software
+
 
 ## Raspberry PI
 
