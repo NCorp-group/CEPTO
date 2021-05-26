@@ -14,7 +14,7 @@
     - [Install NodeJS](#install-nodejs)
     - [Zigbee2mqtt](#zigbee2mqtt)
     - [Mosquitto-broker](#mosquitto-broker)
-  - [# Install paho-mqtt](#-install-paho-mqtt)
+  - [Install paho-mqtt](#-install-paho-mqtt)
     - [Running the program](#running-the-program)
   - [Webserver/Database](#webserverdatabase)
     - [Install dependencies](#install-dependencies)
@@ -116,8 +116,6 @@ python3 light_guide/production/LightGuideHome.py <web_server_ip>
 ## Webserver/Database
 
 ### Install dependencies
-
-**TODO** 
 
 Source the `web_server/launch.sh` with root permissions. If the script is not executable, then first change its file permissions with the following commands:
 ```sh
